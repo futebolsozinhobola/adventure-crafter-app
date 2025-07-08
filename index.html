@@ -49,6 +49,13 @@
         .pop-in { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { from { transform: translateY(10px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        
+        /* Animação para texto e cor do gerador */
+        .content-swap { animation: contentFade 0.4s ease-in-out; }
+        @keyframes contentFade {
+            0% { opacity: 0; transform: translateY(5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
 
         /* Estilos do Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
@@ -82,7 +89,7 @@
         <header class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-3xl font-title">Adventure Crafter</h1>
-                <p class="text-muted">Web Edition v5.2 - Final</p>
+                <p class="text-muted">Web Edition v6.0 - Flexível</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button id="save-btn" class="px-3 py-2 text-sm font-medium text-white rounded-md btn-primary">Salvar</button>
@@ -106,7 +113,7 @@
 
         <!-- Conteúdo das Abas -->
         <main>
-            <section id="generator-tab" class="tab-content active"><div class="grid grid-cols-1 lg:grid-cols-3 gap-6"><div class="lg:col-span-1 card p-6 rounded-lg shadow-md"><h2 class="text-xl font-title mb-4">Gerar Pontos de Enredo</h2><div class="space-y-4"><div><label for="theme-select" class="block text-sm font-medium text-muted mb-1">Tema</label><select id="theme-select" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary"></select></div><button id="generate-plot-point-btn" class="w-full py-3 rounded-md text-white font-semibold btn-accent shadow-lg transform hover:scale-105 transition-transform">Gerar</button></div></div><div id="result-display" class="lg:col-span-2 card p-6 rounded-lg shadow-md flex flex-col justify-center items-center text-center min-h-[200px] transition-colors duration-500"><h3 id="result-title" class="text-2xl font-title mb-2">Clique em 'Gerar' para começar</h3><p id="result-explanation" class="text-muted">Aguardando geração...</p></div></div></section>
+            <section id="generator-tab" class="tab-content active"><div class="grid grid-cols-1 lg:grid-cols-3 gap-6"><div class="lg:col-span-1 card p-6 rounded-lg shadow-md"><h2 class="text-xl font-title mb-4">Gerar Pontos de Enredo</h2><div class="space-y-4"><div><label for="theme-select" class="block text-sm font-medium text-muted mb-1">Tema</label><select id="theme-select" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary"></select></div><button id="generate-plot-point-btn" class="w-full py-3 rounded-md text-white font-semibold btn-accent shadow-lg transform hover:scale-105 transition-transform">Gerar</button></div></div><div id="result-display" class="lg:col-span-2 card p-6 rounded-lg shadow-md flex flex-col justify-center items-center text-center min-h-[200px] transition-colors duration-500"><div id="result-content"><h3 id="result-title" class="text-2xl font-title mb-2">Clique em 'Gerar' para começar</h3><p id="result-explanation" class="text-muted">Aguardando geração...</p></div></div></div></section>
             <section id="characters-tab" class="tab-content"><div class="flex justify-between items-center mb-4"><h2 class="text-2xl font-title">Personagens</h2><button id="add-character-btn" class="px-4 py-2 rounded-md text-white font-semibold btn-accent">Novo Personagem</button></div><div id="character-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div></section>
             <section id="plotlines-tab" class="tab-content"><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="md:col-span-1 card p-4 rounded-lg"><div class="flex justify-between items-center mb-2"><h2 class="text-xl font-title">Linhas de Enredo</h2><button id="add-plotline-btn" class="px-3 py-1 text-sm rounded-md text-white btn-accent">+</button></div><ul id="plotline-list" class="item-list border border-color rounded-md"></ul></div><div id="plotline-editor-panel" class="md:col-span-2 card p-6 rounded-lg editor-panel"></div></div></section>
             <section id="turning_points-tab" class="tab-content"><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="md:col-span-1 card p-4 rounded-lg"><div class="flex justify-between items-center mb-2"><h2 class="text-xl font-title">Pontos de Virada</h2><button id="add-tp-btn" class="px-3 py-1 text-sm rounded-md text-white btn-accent">+</button></div><ul id="tp-list" class="item-list border border-color rounded-md"></ul></div><div id="tp-editor-panel" class="md:col-span-2 card p-6 rounded-lg editor-panel"></div></div></section>
@@ -289,8 +296,8 @@
                     <input type="text" id="plot-name-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" value="${plot.name}">
                 </div>
                 <div class="mt-4">
-                    <label class="block text-sm font-medium text-muted mb-1">Descrição Completa</label>
-                    <p class="p-4 rounded-md card-light min-h-[60px]">${plot.full_description}</p>
+                    <label for="plot-fulldesc-input" class="block text-sm font-medium text-muted mb-1">Descrição Completa</label>
+                    <textarea id="plot-fulldesc-input" rows="3" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${plot.full_description}</textarea>
                 </div>
                 <div class="mt-4">
                     <label for="plot-notes-input" class="block text-sm font-medium text-muted mb-1">Anotações</label>
@@ -442,9 +449,12 @@
                 if (phraseData) {
                     logEvent(`Ponto Gerado (${originalTheme.toUpperCase()}): ${phraseData.title}${metaInfo}`);
                     const resultDisplay = document.getElementById('result-display');
-                    resultDisplay.classList.remove('pop-in');
-                    void resultDisplay.offsetWidth;
-                    resultDisplay.classList.add('pop-in');
+                    const resultContent = document.getElementById('result-content');
+                    
+                    resultContent.classList.remove('content-swap');
+                    void resultContent.offsetWidth;
+                    resultContent.classList.add('content-swap');
+
                     resultDisplay.style.backgroundColor = THEME_COLORS[finalTheme] || THEME_COLORS.default;
                     
                     document.getElementById('result-title').innerHTML = `${THEME_EMOJIS[finalTheme] || ''} ${phraseData.title}`;
@@ -479,6 +489,7 @@
                         const plot = state.plotlines.find(p => p.id === activeSelections.plotlineId);
                         if(plot) {
                             plot.name = plotEditor.querySelector('#plot-name-input').value;
+                            plot.full_description = plotEditor.querySelector('#plot-fulldesc-input').value;
                             plot.notes = plotEditor.querySelector('#plot-notes-input').value;
                             logEvent(`Linha de enredo "${plot.name}" salva.`);
                             renderPlotlines();
@@ -564,9 +575,15 @@
                 }
                 if (e.target.matches('#confirm-add-char-btn')) {
                     const name = document.getElementById('char-name-input').value;
+                    if (!name) { showToast("Por favor, insira um nome."); return; }
                     const data = JSON.parse(document.getElementById('char-gen-form').dataset.generated || '{}');
-                    if (!name || !data.special_trait) { showToast("Gere um nome e atributos primeiro."); return; }
-                    const newChar = { id: Date.now(), name, ...data, notes: '' };
+                    const newChar = { 
+                        id: Date.now(), name, notes: '',
+                        special_trait: data.special_trait || 'Não gerado',
+                        emoji: data.emoji || '👤',
+                        identities: data.identities || [],
+                        descriptors: data.descriptors || [],
+                    };
                     state.characters.push(newChar);
                     logEvent(`Personagem "${name}" criado.`);
                     renderCharacters();
@@ -581,8 +598,8 @@
                 }
                 if (e.target.matches('#confirm-add-plot-btn')) {
                     const name = document.getElementById('plot-name-modal-input').value;
-                    const desc = e.target.dataset.description;
-                    if (!name || !desc) { showToast("Gere uma descrição e um nome primeiro."); return; }
+                    const desc = e.target.dataset.description || 'Adicionado manualmente.';
+                    if (!name) { showToast("Por favor, dê um nome para o enredo."); return; }
                     const newPlot = { id: Date.now(), name, full_description: desc, notes: '' };
                     state.plotlines.push(newPlot);
                     logEvent(`Linha de enredo "${name}" criada.`);

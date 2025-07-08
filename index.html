@@ -19,15 +19,18 @@
             --bg-main: #0f172a; --bg-surface: #1e293b; --bg-surface-light: #334155;
             --text-main: #f8fafc; --text-muted: #94a3b8; --primary: #3b82f6;
             --primary-dark: #2563eb; --accent: #10b981; --danger: #ef4444;
-            --warning: #f59e0b;
+            --warning: #0891b2; /* Cor META alterada para Ciano */
             --border-color: #334155;
         }
         
-        /* Tema Claro */
+        /* Tema Claro (Cores Renovadas) */
         .light-theme {
-            --bg-main: #f1f5f9; --bg-surface: #ffffff; --bg-surface-light: #e2e8f0;
-            --text-main: #0f172a; --text-muted: #475569;
-            --border-color: #cbd5e1;
+            --bg-main: #f8fafc; /* Slate 50 */
+            --bg-surface: #ffffff; /* White */
+            --bg-surface-light: #f1f5f9; /* Slate 100 */
+            --text-main: #1e293b; /* Slate 800 */
+            --text-muted: #64748b; /* Slate 500 */
+            --border-color: #e2e8f0; /* Slate 200 */
         }
 
         /* Aplicação dos temas e transições */
@@ -181,8 +184,8 @@
         };
 
         // --- Utilitários e Geradores ---
-        const THEME_COLORS = { action: "#dc2626", tension: "#ea580c", mystery: "#7c3aed", social: "#be185d", personal: "#059669", meta: "#f59e0b", default: "#475569" };
-        const THEME_EMOJIS = { action: "💥", tension: "⏳", mystery: "❓", social: "💬", personal: "❤️", meta: "⚙️", default: "🎲" };
+        const THEME_COLORS = { action: "#dc2626", tension: "#ea580c", mystery: "#7c3aed", social: "#be185d", personal: "#059669", meta: "#0891b2", default: "#475569" };
+        const THEME_EMOJIS = { action: "💥", tension: "⏳", mystery: "❓", social: "�", personal: "❤️", meta: "⚙️", default: "🎲" };
 
         class CycledShuffler {
             constructor(items) { this._original = [...items]; this._shuffled = []; this._fill(); }
@@ -253,8 +256,12 @@
                                 <button class="delete-btn text-xs text-red-400 hover:text-red-600" data-type="character" data-id="${char.id}">X</button>
                             </div>
                             <p class="text-sm text-muted font-semibold">${char.special_trait}</p>
-                            <p class="text-sm text-muted"><b>ID:</b> ${char.identities.join(', ')}</p>
-                            <p class="text-sm text-muted"><b>Desc:</b> ${char.descriptors.join(', ')}</p>
+                            <div class="mt-2 space-y-1">
+                                <label class="text-xs font-bold text-muted">IDENTIDADES</label>
+                                <input type="text" value="${char.identities.join(', ')}" class="w-full card-light p-1 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" data-id="${char.id}" data-type="character" data-prop="identities">
+                                <label class="text-xs font-bold text-muted">DESCRITORES</label>
+                                <input type="text" value="${char.descriptors.join(', ')}" class="w-full card-light p-1 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" data-id="${char.id}" data-type="character" data-prop="descriptors">
+                            </div>
                             <textarea class="w-full card-light p-2 mt-2 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" placeholder="Anotações..." data-id="${char.id}" data-type="character" data-prop="notes">${char.notes}</textarea>
                         </div>
                     </div>
@@ -536,16 +543,22 @@
             });
             
             document.getElementById('app-container').addEventListener('input', (e) => {
-                if (e.target.matches('textarea[data-type="character"]')) {
+                if (e.target.matches('textarea[data-type="character"], input[data-type="character"]')) {
                     const char = state.characters.find(c => c.id === parseInt(e.target.dataset.id));
-                    if (char) char.notes = e.target.value;
+                    if (!char) return;
+                    const prop = e.target.dataset.prop;
+                    if (prop === 'notes') {
+                        char.notes = e.target.value;
+                    } else if (prop === 'identities' || prop === 'descriptors') {
+                        char[prop] = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+                    }
                 }
             });
 
             document.getElementById('modal').addEventListener('click', (e) => {
+                const form = document.getElementById('char-gen-form');
                 if (e.target.matches('.cancel-modal-btn')) modal.close();
                 if (e.target.matches('#generate-char-attrs-btn') || e.target.matches('.reroll-btn')) {
-                    const form = document.getElementById('char-gen-form');
                     const isReroll = e.target.matches('.reroll-btn');
                     const data = JSON.parse(form.dataset.generated || '{}');
                     if (!isReroll || !data.special_trait) {
@@ -576,7 +589,7 @@
                 if (e.target.matches('#confirm-add-char-btn')) {
                     const name = document.getElementById('char-name-input').value;
                     if (!name) { showToast("Por favor, insira um nome."); return; }
-                    const data = JSON.parse(document.getElementById('char-gen-form').dataset.generated || '{}');
+                    const data = JSON.parse(form.dataset.generated || '{}');
                     const newChar = { 
                         id: Date.now(), name, notes: '',
                         special_trait: data.special_trait || 'Não gerado',
@@ -664,7 +677,7 @@
         // --- Inicialização da Aplicação ---
         function init() {
             const themeSelect = document.getElementById('theme-select');
-            themeSelect.innerHTML = Object.keys(phrasesData).map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('');
+            themeSelect.innerHTML = Object.keys(phrasesData).filter(t => t !== 'meta').map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('');
             
             initializeShufflers();
             setupEventListeners();
@@ -677,3 +690,4 @@
     </script>
 </body>
 </html>
+�

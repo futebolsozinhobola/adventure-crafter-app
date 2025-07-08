@@ -81,7 +81,7 @@
         <header class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-3xl font-title">Adventure Crafter</h1>
-                <p class="text-muted">Web Edition v4.1 - Reconstruído</p>
+                <p class="text-muted">Web Edition v5.0 - Funcional</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button id="save-btn" class="px-3 py-2 text-sm font-medium text-white rounded-md btn-primary">Salvar</button>
@@ -100,6 +100,7 @@
             <button data-tab="characters" class="tab-button px-4 py-3 font-semibold border-b-2 transition-colors">Personagens</button>
             <button data-tab="plotlines" class="tab-button px-4 py-3 font-semibold border-b-2 transition-colors">Linhas de Enredo</button>
             <button data-tab="turning_points" class="tab-button px-4 py-3 font-semibold border-b-2 transition-colors">Pontos de Virada</button>
+            <button data-tab="notes" class="tab-button px-4 py-3 font-semibold border-b-2 transition-colors">Anotações</button>
         </div>
 
         <!-- Conteúdo das Abas -->
@@ -160,6 +161,18 @@
                     <div id="tp-editor-panel" class="md:col-span-2 card p-6 rounded-lg editor-panel"></div>
                 </div>
             </section>
+
+            <!-- Seção: Anotações -->
+            <section id="notes-tab" class="tab-content">
+                <div class="card p-6 rounded-lg">
+                    <h2 class="text-xl font-title mb-4">Registro da Aventura</h2>
+                    <textarea id="history-log" readonly class="w-full h-96 p-2 rounded-md card-light border-none font-mono text-sm"></textarea>
+                    <div class="mt-4 flex justify-end space-x-2">
+                        <button id="export-notes-btn" class="px-4 py-2 rounded-md text-white btn-primary">Exportar</button>
+                        <button id="clear-notes-btn" class="px-4 py-2 rounded-md text-white btn-danger">Limpar</button>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
     
@@ -181,7 +194,7 @@
     <script>
     (async function() {
         // --- Definições de Tipo (JSDoc) ---
-        /** @typedef {{characters: Character[], plotlines: Plotline[], turning_points: TurningPoint[], theme: 'light'|'dark'}} State */
+        /** @typedef {{characters: Character[], plotlines: Plotline[], turning_points: TurningPoint[], theme: 'light'|'dark', history: string}} State */
         /** @typedef {{id: number, name: string, special_trait: string, emoji: string, identities: string[], descriptors: string[], notes: string}} Character */
         /** @typedef {{id: number, name: string, full_description: string, notes: string}} Plotline */
         /** @typedef {{id: number, title: string, plotlineId: number|null, status: string, plot_points: string[], invoked_characters: string[], notes: string}} TurningPoint */
@@ -215,7 +228,7 @@
         // --- Estado da Aplicação ---
         /** @type {State} */
         let state = {
-            characters: [], plotlines: [], turning_points: [], theme: 'dark'
+            characters: [], plotlines: [], turning_points: [], theme: 'dark', history: ''
         };
         let activeSelections = {
             plotlineId: null,
@@ -256,6 +269,11 @@
             toast.style.opacity = '1';
             setTimeout(() => { toast.style.opacity = '0'; }, 3000);
         };
+        const logEvent = (message) => {
+            const timestamp = new Date().toLocaleTimeString('pt-BR');
+            state.history += `[${timestamp}] ${message}\n`;
+            renderHistory();
+        };
 
         // --- Renderização (UI) ---
         const DOM = {
@@ -264,6 +282,7 @@
             tpList: document.getElementById('tp-list'),
             plotlineEditor: document.getElementById('plotline-editor-panel'),
             tpEditor: document.getElementById('tp-editor-panel'),
+            historyLog: document.getElementById('history-log'),
         };
 
         const renderAll = () => {
@@ -272,6 +291,7 @@
             renderTurningPoints();
             renderPlotlineEditor();
             renderTPEditor();
+            renderHistory();
         };
 
         function renderCharacters() {
@@ -400,6 +420,11 @@
             editor.classList.add('active');
         }
 
+        function renderHistory() {
+            DOM.historyLog.value = state.history;
+            DOM.historyLog.scrollTop = DOM.historyLog.scrollHeight;
+        }
+
         // --- Lógica dos Modais e Geradores ---
         const modal = {
             content: document.getElementById('modal-content'),
@@ -477,6 +502,7 @@
                 resultDisplay.classList.add('fade-in');
                 document.getElementById('result-title').textContent = phraseData.title;
                 document.getElementById('result-explanation').textContent = phraseData.desc;
+                logEvent(`Ponto de Enredo Gerado (${theme}): ${phraseData.title}`);
             });
             
             // Botões de Adicionar
@@ -486,6 +512,7 @@
                 const newTP = { id: Date.now(), title: `Novo Ponto de Virada ${state.turning_points.length + 1}`, plotlineId: null, status: 'Nova', plot_points: [], invoked_characters: [], notes: '' };
                 state.turning_points.push(newTP);
                 activeSelections.tpId = newTP.id;
+                logEvent(`Ponto de Virada "${newTP.title}" criado.`);
                 renderAll();
             });
 
@@ -506,13 +533,16 @@
                         if(plot) {
                             plot.name = plotEditor.querySelector('#plot-name-input').value;
                             plot.notes = plotEditor.querySelector('#plot-notes-input').value;
+                            logEvent(`Linha de enredo "${plot.name}" salva.`);
                             renderPlotlines();
                             showToast("Linha de enredo salva!");
                         }
                     } else if (e.target.matches('#delete-plotline-btn')) {
+                        const plotName = state.plotlines.find(p => p.id === activeSelections.plotlineId)?.name;
                         state.plotlines = state.plotlines.filter(p => p.id !== activeSelections.plotlineId);
                         state.turning_points.forEach(tp => { if (tp.plotlineId === activeSelections.plotlineId) tp.plotlineId = null; });
                         activeSelections.plotlineId = null;
+                        logEvent(`Linha de enredo "${plotName}" removida.`);
                         renderAll();
                     }
                 }
@@ -527,17 +557,22 @@
                             tp.plot_points = Array.from(tpEditor.querySelectorAll('.tp-plot-point-input')).map(i => i.value);
                             tp.invoked_characters = Array.from(tpEditor.querySelectorAll('.tp-char-input')).map(i => i.value);
                             tp.notes = tpEditor.querySelector('#tp-notes-input').value;
+                            logEvent(`Ponto de Virada "${tp.title}" salvo.`);
                             renderTurningPoints();
                             showToast("Ponto de virada salvo!");
                         }
                     } else if (e.target.matches('#delete-tp-btn')) {
+                        const tpTitle = state.turning_points.find(t => t.id === activeSelections.tpId)?.title;
                         state.turning_points = state.turning_points.filter(t => t.id !== activeSelections.tpId);
                         activeSelections.tpId = null;
+                        logEvent(`Ponto de Virada "${tpTitle}" removido.`);
                         renderAll();
                     }
                 }
                 if (e.target.matches('.delete-btn[data-type="character"]')) {
+                    const charName = state.characters.find(c => c.id === parseInt(e.target.dataset.id))?.name;
                     state.characters = state.characters.filter(c => c.id !== parseInt(e.target.dataset.id));
+                    logEvent(`Personagem "${charName}" removido.`);
                     renderCharacters();
                 }
             });
@@ -588,6 +623,7 @@
                     if (!name || !data.special_trait) { showToast("Gere um nome e atributos primeiro."); return; }
                     const newChar = { id: Date.now(), name, ...data, notes: '' };
                     state.characters.push(newChar);
+                    logEvent(`Personagem "${name}" criado.`);
                     renderCharacters();
                     modal.close();
                 }
@@ -604,6 +640,7 @@
                     if (!name || !desc) { showToast("Gere uma descrição e um nome primeiro."); return; }
                     const newPlot = { id: Date.now(), name, full_description: desc, notes: '' };
                     state.plotlines.push(newPlot);
+                    logEvent(`Linha de enredo "${name}" criada.`);
                     renderAll();
                     modal.close();
                 }
@@ -616,6 +653,7 @@
                 link.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
                 link.download = `adventure-crafter-${new Date().toISOString().slice(0,10)}.json`;
                 link.click();
+                logEvent(`Aventura salva.`);
             });
             document.getElementById('load-file').addEventListener('change', (e) => {
                 const file = e.target.files[0];
@@ -628,6 +666,7 @@
                             state = loaded;
                             initializeShufflers();
                             renderAll();
+                            logEvent(`Aventura carregada do arquivo: ${file.name}`);
                             showToast("Aventura carregada!");
                         } else throw new Error("Formato de arquivo inválido.");
                     } catch (err) { showToast(`Erro ao carregar: ${err.message}`); }
@@ -644,6 +683,21 @@
             });
             document.getElementById('modal-close-btn').addEventListener('click', modal.close);
             modal.backdrop.addEventListener('click', modal.close);
+            document.getElementById('export-notes-btn').addEventListener('click', () => {
+                const blob = new Blob([state.history], {type: 'text/plain'});
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `anotacoes-aventura-${new Date().toISOString().slice(0,10)}.txt`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            });
+            document.getElementById('clear-notes-btn').addEventListener('click', () => {
+                if(confirm("Tem certeza que deseja limpar todo o registro de anotações?")) {
+                    state.history = "";
+                    renderHistory();
+                    logEvent("Registro de anotações limpo.");
+                }
+            });
         }
 
         // --- Inicialização da Aplicação ---
@@ -654,6 +708,7 @@
             initializeShufflers();
             setupEventListeners();
             renderAll();
+            logEvent("Adventure Crafter iniciado.");
         }
 
         init();

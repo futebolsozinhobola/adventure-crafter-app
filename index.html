@@ -92,7 +92,7 @@
         <header class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-3xl font-title">Adventure Crafter</h1>
-                <p class="text-muted">Web Edition v6.7 - Estável</p>
+                <p class="text-muted">Web Edition v6.8 - Estável</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button id="save-btn" class="px-3 py-2 text-sm font-medium text-white rounded-md btn-primary">Salvar</button>
@@ -127,7 +127,7 @@
                         <!-- Seleção de Dados -->
                         <div class="mb-6">
                             <h3 class="text-lg font-semibold text-muted mb-3 text-center">Selecione o Dado</h3>
-                            <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 text-center">
+                            <div id="dice-selector" class="grid grid-cols-3 sm:grid-cols-6 gap-3 text-center">
                                 <button class="dice-btn p-3 rounded-lg card-light font-bold text-lg transition-all duration-200" data-die="4">d4</button>
                                 <button class="dice-btn p-3 rounded-lg card-light font-bold text-lg transition-all duration-200" data-die="6">d6</button>
                                 <button class="dice-btn p-3 rounded-lg card-light font-bold text-lg transition-all duration-200" data-die="8">d8</button>
@@ -258,7 +258,7 @@
 
         // --- Classes e Funções Utilitárias ---
         class CycledShuffler {
-            constructor(items) { this._original = [...items]; this._shuffled = []; this._fill(); }
+            constructor(items) { this._original = [...(items || [])]; this._shuffled = []; this._fill(); }
             _fill() { this._shuffled = [...this._original].sort(() => Math.random() - 0.5); }
             next() { if (this._shuffled.length === 0) this._fill(); return this._shuffled.pop(); }
         }
@@ -300,29 +300,29 @@
         };
         
         // --- Funções de Renderização ---
-        function renderAll() {
+        const renderAll = () => {
             renderCharacters();
             renderPlotlines();
             renderTurningPoints();
             renderPlotlineEditor();
             renderTPEditor();
             renderHistory();
-        }
-        function renderCharacters() { DOM.characterList.innerHTML = state.characters.length === 0 ? `<p class="text-muted col-span-full text-center p-8">Nenhum personagem criado.</p>` : state.characters.map(char => ` <div class="card p-4 rounded-lg shadow-md flex flex-col justify-between fade-in"> <div> <div class="flex justify-between items-start"> <h3 class="font-title text-lg mb-1">${char.emoji} ${char.name}</h3> <button class="delete-btn text-xs text-red-400 hover:text-red-600" data-type="character" data-id="${char.id}">X</button> </div> <p class="text-sm text-muted font-semibold">${char.special_trait}</p> <div class="mt-2 space-y-1"> <label class="text-xs font-bold text-muted">IDENTIDADES</label> <input type="text" value="${char.identities.join(', ')}" class="w-full card-light p-1 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" data-id="${char.id}" data-type="character" data-prop="identities"> <label class="text-xs font-bold text-muted">DESCRITORES</label> <input type="text" value="${char.descriptors.join(', ')}" class="w-full card-light p-1 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" data-id="${char.id}" data-type="character" data-prop="descriptors"> </div> <textarea class="w-full card-light p-2 mt-2 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" placeholder="Anotações..." data-id="${char.id}" data-type="character" data-prop="notes">${char.notes}</textarea> </div> </div> `).join(''); }
-        function renderPlotlines() { DOM.plotlineList.innerHTML = state.plotlines.length === 0 ? `<li class="p-4 text-center text-muted">Nenhum enredo.</li>` : state.plotlines.map(plot => ` <li class="p-3 cursor-pointer border-b border-color last:border-b-0 hover:bg-surface-light transition-colors ${plot.id === activeSelections.plotlineId ? 'selected' : ''}" data-id="${plot.id}"> ${plot.name} </li> `).join(''); }
-        function renderTurningPoints() { DOM.tpList.innerHTML = state.turning_points.length === 0 ? `<li class="p-4 text-center text-muted">Nenhum ponto de virada.</li>` : state.turning_points.map(tp => ` <li class="p-3 cursor-pointer border-b border-color last:border-b-0 hover:bg-surface-light transition-colors ${tp.id === activeSelections.tpId ? 'selected' : ''}" data-id="${tp.id}"> ${tp.title} </li> `).join(''); }
-        function renderPlotlineEditor() { const editor = DOM.plotlineEditor; const plot = state.plotlines.find(p => p.id === activeSelections.plotlineId); if (!plot) { editor.classList.remove('active'); editor.innerHTML = ''; return; } editor.innerHTML = ` <h3 class="text-xl font-title mb-4">Editor de Linha de Enredo</h3> <div> <label for="plot-name-input" class="block text-sm font-medium text-muted mb-1">Nome Curto</label> <input type="text" id="plot-name-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" value="${plot.name}"> </div> <div class="mt-4"> <label for="plot-fulldesc-input" class="block text-sm font-medium text-muted mb-1">Descrição Completa</label> <textarea id="plot-fulldesc-input" rows="3" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${plot.full_description}</textarea> </div> <div class="mt-4"> <label for="plot-notes-input" class="block text-sm font-medium text-muted mb-1">Anotações</label> <textarea id="plot-notes-input" rows="5" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${plot.notes}</textarea> </div> <div class="mt-4 flex justify-end space-x-2"> <button id="delete-plotline-btn" class="px-4 py-2 rounded-md text-white btn-danger">Remover</button> <button id="save-plotline-btn" class="px-4 py-2 rounded-md text-white btn-primary">Salvar</button> </div> `; editor.classList.add('active'); }
-        function renderTPEditor() { const editor = DOM.tpEditor; const tp = state.turning_points.find(t => t.id === activeSelections.tpId); if (!tp) { editor.classList.remove('active'); editor.innerHTML = ''; return; } const plotlineOptions = '<option value="">Nenhuma</option>' + state.plotlines.map(p => `<option value="${p.id}" ${p.id === tp.plotlineId ? 'selected' : ''}>${p.name}</option>`).join(''); editor.innerHTML = ` <h3 class="text-xl font-title mb-4">Editor de Ponto de Virada</h3> <div class="space-y-4"> <div> <label for="tp-title-input" class="block text-sm font-medium text-muted mb-1">Título</label> <input type="text" id="tp-title-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" value="${tp.title}"> </div> <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"> <div> <label for="tp-plotline-select" class="block text-sm font-medium text-muted mb-1">Linha de Enredo</label> <select id="tp-plotline-select" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${plotlineOptions}</select> </div> <div> <label class="block text-sm font-medium text-muted mb-1">Status</label> <div class="flex space-x-4 p-2"> <label><input type="radio" name="tp-status" value="Nova" ${tp.status === 'Nova' ? 'checked' : ''}> Nova</label> <label><input type="radio" name="tp-status" value="Desenvolvimento" ${tp.status === 'Desenvolvimento' ? 'checked' : ''}> Em Andamento</label> <label><input type="radio" name="tp-status" value="Conclusão" ${tp.status === 'Conclusão' ? 'checked' : ''}> Conclusão</label> </div> </div> </div> <div class="grid grid-cols-1 sm:grid-cols-2 gap-6"> <div class="space-y-2"> <label class="block text-sm font-medium text-muted">Pontos de Trama</label> ${Array.from({length: 5}).map((_, i) => `<input type="text" class="tp-plot-point-input w-full p-2 rounded-md card-light border-none text-sm" placeholder="${i + 1}. ..." value="${tp.plot_points[i] || ''}">`).join('')} </div> <div class="space-y-2"> <label class="block text-sm font-medium text-muted">Personagens Invocados</label> ${Array.from({length: 5}).map((_, i) => `<input type="text" class="tp-char-input w-full p-2 rounded-md card-light border-none text-sm" placeholder="${i + 1}. ..." value="${tp.invoked_characters[i] || ''}">`).join('')} </div> </div> <div> <label for="tp-notes-input" class="block text-sm font-medium text-muted mb-1">Anotações</label> <textarea id="tp-notes-input" rows="4" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${tp.notes}</textarea> </div> </div> <div class="mt-4 flex justify-end space-x-2"> <button id="delete-tp-btn" class="px-4 py-2 rounded-md text-white btn-danger">Remover</button> <button id="save-tp-btn" class="px-4 py-2 rounded-md text-white btn-primary">Salvar</button> </div> `; editor.classList.add('active'); }
-        function renderHistory() { DOM.historyLog.value = state.history; DOM.historyLog.scrollTop = DOM.historyLog.scrollHeight; }
+        };
+        const renderCharacters = () => { DOM.characterList.innerHTML = state.characters.length === 0 ? `<p class="text-muted col-span-full text-center p-8">Nenhum personagem criado.</p>` : state.characters.map(char => ` <div class="card p-4 rounded-lg shadow-md flex flex-col justify-between fade-in"> <div> <div class="flex justify-between items-start"> <h3 class="font-title text-lg mb-1">${char.emoji} ${char.name}</h3> <button class="delete-btn text-xs text-red-400 hover:text-red-600" data-type="character" data-id="${char.id}">X</button> </div> <p class="text-sm text-muted font-semibold">${char.special_trait}</p> <div class="mt-2 space-y-1"> <label class="text-xs font-bold text-muted">IDENTIDADES</label> <input type="text" value="${char.identities.join(', ')}" class="w-full card-light p-1 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" data-id="${char.id}" data-type="character" data-prop="identities"> <label class="text-xs font-bold text-muted">DESCRITORES</label> <input type="text" value="${char.descriptors.join(', ')}" class="w-full card-light p-1 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" data-id="${char.id}" data-type="character" data-prop="descriptors"> </div> <textarea class="w-full card-light p-2 mt-2 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" placeholder="Anotações..." data-id="${char.id}" data-type="character" data-prop="notes">${char.notes}</textarea> </div> </div> `).join(''); };
+        const renderPlotlines = () => { DOM.plotlineList.innerHTML = state.plotlines.length === 0 ? `<li class="p-4 text-center text-muted">Nenhum enredo.</li>` : state.plotlines.map(plot => ` <li class="p-3 cursor-pointer border-b border-color last:border-b-0 hover:bg-surface-light transition-colors ${plot.id === activeSelections.plotlineId ? 'selected' : ''}" data-id="${plot.id}"> ${plot.name} </li> `).join(''); };
+        const renderTurningPoints = () => { DOM.tpList.innerHTML = state.turning_points.length === 0 ? `<li class="p-4 text-center text-muted">Nenhum ponto de virada.</li>` : state.turning_points.map(tp => ` <li class="p-3 cursor-pointer border-b border-color last:border-b-0 hover:bg-surface-light transition-colors ${tp.id === activeSelections.tpId ? 'selected' : ''}" data-id="${tp.id}"> ${tp.title} </li> `).join(''); };
+        const renderPlotlineEditor = () => { const editor = DOM.plotlineEditor; const plot = state.plotlines.find(p => p.id === activeSelections.plotlineId); if (!plot) { editor.classList.remove('active'); editor.innerHTML = ''; return; } editor.innerHTML = ` <h3 class="text-xl font-title mb-4">Editor de Linha de Enredo</h3> <div> <label for="plot-name-input" class="block text-sm font-medium text-muted mb-1">Nome Curto</label> <input type="text" id="plot-name-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" value="${plot.name}"> </div> <div class="mt-4"> <label for="plot-fulldesc-input" class="block text-sm font-medium text-muted mb-1">Descrição Completa</label> <textarea id="plot-fulldesc-input" rows="3" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${plot.full_description}</textarea> </div> <div class="mt-4"> <label for="plot-notes-input" class="block text-sm font-medium text-muted mb-1">Anotações</label> <textarea id="plot-notes-input" rows="5" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${plot.notes}</textarea> </div> <div class="mt-4 flex justify-end space-x-2"> <button id="delete-plotline-btn" class="px-4 py-2 rounded-md text-white btn-danger">Remover</button> <button id="save-plotline-btn" class="px-4 py-2 rounded-md text-white btn-primary">Salvar</button> </div> `; editor.classList.add('active'); };
+        const renderTPEditor = () => { const editor = DOM.tpEditor; const tp = state.turning_points.find(t => t.id === activeSelections.tpId); if (!tp) { editor.classList.remove('active'); editor.innerHTML = ''; return; } const plotlineOptions = '<option value="">Nenhuma</option>' + state.plotlines.map(p => `<option value="${p.id}" ${p.id === tp.plotlineId ? 'selected' : ''}>${p.name}</option>`).join(''); editor.innerHTML = ` <h3 class="text-xl font-title mb-4">Editor de Ponto de Virada</h3> <div class="space-y-4"> <div> <label for="tp-title-input" class="block text-sm font-medium text-muted mb-1">Título</label> <input type="text" id="tp-title-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" value="${tp.title}"> </div> <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"> <div> <label for="tp-plotline-select" class="block text-sm font-medium text-muted mb-1">Linha de Enredo</label> <select id="tp-plotline-select" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${plotlineOptions}</select> </div> <div> <label class="block text-sm font-medium text-muted mb-1">Status</label> <div class="flex space-x-4 p-2"> <label><input type="radio" name="tp-status" value="Nova" ${tp.status === 'Nova' ? 'checked' : ''}> Nova</label> <label><input type="radio" name="tp-status" value="Desenvolvimento" ${tp.status === 'Desenvolvimento' ? 'checked' : ''}> Em Andamento</label> <label><input type="radio" name="tp-status" value="Conclusão" ${tp.status === 'Conclusão' ? 'checked' : ''}> Conclusão</label> </div> </div> </div> <div class="grid grid-cols-1 sm:grid-cols-2 gap-6"> <div class="space-y-2"> <label class="block text-sm font-medium text-muted">Pontos de Trama</label> ${Array.from({length: 5}).map((_, i) => `<input type="text" class="tp-plot-point-input w-full p-2 rounded-md card-light border-none text-sm" placeholder="${i + 1}. ..." value="${tp.plot_points[i] || ''}">`).join('')} </div> <div class="space-y-2"> <label class="block text-sm font-medium text-muted">Personagens Invocados</label> ${Array.from({length: 5}).map((_, i) => `<input type="text" class="tp-char-input w-full p-2 rounded-md card-light border-none text-sm" placeholder="${i + 1}. ..." value="${tp.invoked_characters[i] || ''}">`).join('')} </div> </div> <div> <label for="tp-notes-input" class="block text-sm font-medium text-muted mb-1">Anotações</label> <textarea id="tp-notes-input" rows="4" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${tp.notes}</textarea> </div> </div> <div class="mt-4 flex justify-end space-x-2"> <button id="delete-tp-btn" class="px-4 py-2 rounded-md text-white btn-danger">Remover</button> <button id="save-tp-btn" class="px-4 py-2 rounded-md text-white btn-primary">Salvar</button> </div> `; editor.classList.add('active'); };
+        const renderHistory = () => { DOM.historyLog.value = state.history; DOM.historyLog.scrollTop = DOM.historyLog.scrollHeight; };
 
         // --- Funções de UI (Modais) ---
         const modal = { content: document.getElementById('modal-content'), backdrop: document.getElementById('modal-backdrop'), container: document.getElementById('modal'), open(html) { this.content.innerHTML = html; this.backdrop.classList.remove('hidden'); this.container.classList.remove('hidden'); this.container.classList.add('pop-in'); }, close() { this.container.classList.add('hidden'); this.backdrop.classList.add('hidden'); this.content.innerHTML = ''; this.container.classList.remove('pop-in');} };
-        function showConfirmationModal(message, onConfirm) { modal.open(` <h2 class="font-title text-xl mb-4 text-center">Confirmação</h2> <p class="text-center text-muted mb-6">${message}</p> <div class="flex justify-center space-x-4"> <button id="confirm-cancel" class="px-6 py-2 rounded-md card-light">Cancelar</button> <button id="confirm-action" class="px-6 py-2 rounded-md text-white btn-danger">Confirmar</button> </div> `); document.getElementById('confirm-action').onclick = () => { onConfirm(); modal.close(); }; document.getElementById('confirm-cancel').onclick = () => modal.close(); }
-        function showCharacterGenerator() { const nameThemes = Object.keys(charactersData.name_parts).map(t => `<option value="${t}">${t}</option>`).join(''); modal.open(` <h2 class="font-title text-2xl mb-6 text-center">Gerador de Personagem</h2> <div class="space-y-4" id="char-gen-form" data-generated="{}"> <input type="text" id="char-name-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" placeholder="Nome do Personagem"> <select id="char-name-theme" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${nameThemes}</select> <button id="generate-char-name-btn" class="w-full py-2 rounded-md text-white font-semibold btn-primary">Gerar Nome</button> <div class="p-4 rounded-md card-light space-y-2"> <p><b>Característica:</b> <span id="char-gen-special">...</span></p> <div class="flex items-center"><b>Identidades:</b> <span id="char-gen-identities" class="ml-2">...</span><button class="reroll-btn ml-auto text-lg" data-type="identities">🎲</button></div> <div class="flex items-center"><b>Descritores:</b> <span id="char-gen-descriptors" class="ml-2">...</span><button class="reroll-btn ml-auto text-lg" data-type="descriptors">🎲</button></div> </div> <button id="generate-char-attrs-btn" class="w-full py-2 rounded-md text-white font-semibold btn-accent">Gerar Atributos</button> </div> <div class="flex justify-end space-x-3 mt-8"> <button class="cancel-modal-btn px-4 py-2 rounded-md card-light">Cancelar</button> <button id="confirm-add-char-btn" class="px-4 py-2 rounded-md text-white btn-accent">Adicionar Personagem</button> </div> `); }
-        function showPlotlineGenerator() { const plotThemes = Object.keys(plotlinesData).map(t => `<option value="${t}">${t}</option>`).join(''); modal.open(` <h2 class="font-title text-2xl mb-6 text-center">Gerador de Linha de Enredo</h2> <div class="space-y-4"> <select id="plot-theme" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${plotThemes}</select> <button id="generate-plot-desc-btn" class="w-full py-2 rounded-md text-white font-semibold btn-primary">Gerar Descrição</button> <p id="generated-plot-desc" class="text-center p-4 card-light rounded-md min-h-[60px]">...</p> <input type="text" id="plot-name-modal-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" placeholder="Dê um nome curto para o enredo"> </div> <div class="flex justify-end space-x-3 mt-8"> <button class="cancel-modal-btn px-4 py-2 rounded-md card-light">Cancelar</button> <button id="confirm-add-plot-btn" class="px-4 py-2 rounded-md text-white btn-accent">Adicionar Enredo</button> </div> `); }
+        const showConfirmationModal = (message, onConfirm) => { modal.open(` <h2 class="font-title text-xl mb-4 text-center">Confirmação</h2> <p class="text-center text-muted mb-6">${message}</p> <div class="flex justify-center space-x-4"> <button id="confirm-cancel" class="px-6 py-2 rounded-md card-light">Cancelar</button> <button id="confirm-action" class="px-6 py-2 rounded-md text-white btn-danger">Confirmar</button> </div> `); document.getElementById('confirm-action').onclick = () => { onConfirm(); modal.close(); }; document.getElementById('confirm-cancel').onclick = () => modal.close(); };
+        const showCharacterGenerator = () => { const nameThemes = Object.keys(charactersData.name_parts).map(t => `<option value="${t}">${t}</option>`).join(''); modal.open(` <h2 class="font-title text-2xl mb-6 text-center">Gerador de Personagem</h2> <div class="space-y-4" id="char-gen-form" data-generated="{}"> <input type="text" id="char-name-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" placeholder="Nome do Personagem"> <select id="char-name-theme" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${nameThemes}</select> <button id="generate-char-name-btn" class="w-full py-2 rounded-md text-white font-semibold btn-primary">Gerar Nome</button> <div class="p-4 rounded-md card-light space-y-2"> <p><b>Característica:</b> <span id="char-gen-special">...</span></p> <div class="flex items-center"><b>Identidades:</b> <span id="char-gen-identities" class="ml-2">...</span><button class="reroll-btn ml-auto text-lg" data-type="identities">🎲</button></div> <div class="flex items-center"><b>Descritores:</b> <span id="char-gen-descriptors" class="ml-2">...</span><button class="reroll-btn ml-auto text-lg" data-type="descriptors">🎲</button></div> </div> <button id="generate-char-attrs-btn" class="w-full py-2 rounded-md text-white font-semibold btn-accent">Gerar Atributos</button> </div> <div class="flex justify-end space-x-3 mt-8"> <button class="cancel-modal-btn px-4 py-2 rounded-md card-light">Cancelar</button> <button id="confirm-add-char-btn" class="px-4 py-2 rounded-md text-white btn-accent">Adicionar Personagem</button> </div> `); };
+        const showPlotlineGenerator = () => { const plotThemes = Object.keys(plotlinesData).map(t => `<option value="${t}">${t}</option>`).join(''); modal.open(` <h2 class="font-title text-2xl mb-6 text-center">Gerador de Linha de Enredo</h2> <div class="space-y-4"> <select id="plot-theme" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${plotThemes}</select> <button id="generate-plot-desc-btn" class="w-full py-2 rounded-md text-white font-semibold btn-primary">Gerar Descrição</button> <p id="generated-plot-desc" class="text-center p-4 card-light rounded-md min-h-[60px]">...</p> <input type="text" id="plot-name-modal-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" placeholder="Dê um nome curto para o enredo"> </div> <div class="flex justify-end space-x-3 mt-8"> <button class="cancel-modal-btn px-4 py-2 rounded-md card-light">Cancelar</button> <button id="confirm-add-plot-btn" class="px-4 py-2 rounded-md text-white btn-accent">Adicionar Enredo</button> </div> `); };
         
         // --- Lógica do Gráfico ---
-        function updateFairnessChart(dieSize, results) {
+        const updateFairnessChart = (dieSize, results) => {
             const ctx = document.getElementById('fairness-chart').getContext('2d');
             const labels = Array.from({ length: dieSize }, (_, i) => i + 1);
             const data = labels.map(label => results[label] || 0);
@@ -348,10 +348,10 @@
                     plugins: { legend: { labels: { color: 'var(--text-main)' } } }
                 }
             });
-        }
+        };
 
         // --- Função Principal de Eventos ---
-        function setupEventListeners() {
+        const setupEventListeners = () => {
             // Navegação por Abas
             document.getElementById('tab-navigation').addEventListener('click', (e) => {
                 if (e.target.matches('.tab-button')) {
@@ -413,25 +413,187 @@
             DOM.tpList.addEventListener('click', (e) => { if (e.target.matches('li')) { activeSelections.tpId = parseInt(e.target.dataset.id); renderAll(); } });
 
             // Eventos de Deleção e Edição
-            document.getElementById('app-container').addEventListener('click', (e) => {
-                // ... (código de salvar/deletar plotlines, tps, characters)
-            });
             document.getElementById('app-container').addEventListener('input', (e) => {
-                // ... (código de edição inline de characters)
+                if (e.target.matches('textarea[data-type="character"], input[data-type="character"]')) {
+                    const char = state.characters.find(c => c.id === parseInt(e.target.dataset.id));
+                    if (!char) return;
+                    const prop = e.target.dataset.prop;
+                    if (prop === 'notes') {
+                        char.notes = e.target.value;
+                    } else if (prop === 'identities' || prop === 'descriptors') {
+                        char[prop] = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+                    }
+                }
+            });
+            
+            document.getElementById('app-container').addEventListener('click', (e) => {
+                if (e.target.matches('.delete-btn[data-type="character"]')) {
+                    const charId = parseInt(e.target.dataset.id);
+                    const charName = state.characters.find(c => c.id === charId)?.name;
+                    state.characters = state.characters.filter(c => c.id !== charId);
+                    logEvent(`Personagem "${charName}" removido.`);
+                    renderCharacters();
+                }
+                const plotEditor = e.target.closest('#plotline-editor-panel');
+                if (plotEditor) {
+                    if (e.target.matches('#save-plotline-btn')) {
+                        const plot = state.plotlines.find(p => p.id === activeSelections.plotlineId);
+                        if(plot) {
+                            plot.name = plotEditor.querySelector('#plot-name-input').value;
+                            plot.full_description = plotEditor.querySelector('#plot-fulldesc-input').value;
+                            plot.notes = plotEditor.querySelector('#plot-notes-input').value;
+                            logEvent(`Linha de enredo "${plot.name}" salva.`);
+                            renderPlotlines();
+                            showToast("Linha de enredo salva!");
+                        }
+                    } else if (e.target.matches('#delete-plotline-btn')) {
+                        const plotName = state.plotlines.find(p => p.id === activeSelections.plotlineId)?.name;
+                        state.plotlines = state.plotlines.filter(p => p.id !== activeSelections.plotlineId);
+                        state.turning_points.forEach(tp => { if (tp.plotlineId === activeSelections.plotlineId) tp.plotlineId = null; });
+                        activeSelections.plotlineId = null;
+                        logEvent(`Linha de enredo "${plotName}" removida.`);
+                        renderAll();
+                    }
+                }
+                const tpEditor = e.target.closest('#tp-editor-panel');
+                if (tpEditor) {
+                    if(e.target.matches('#save-tp-btn')) {
+                        const tp = state.turning_points.find(t => t.id === activeSelections.tpId);
+                        if(tp) {
+                            tp.title = tpEditor.querySelector('#tp-title-input').value;
+                            tp.plotlineId = parseInt(tpEditor.querySelector('#tp-plotline-select').value) || null;
+                            tp.status = tpEditor.querySelector('input[name="tp-status"]:checked').value;
+                            tp.plot_points = Array.from(tpEditor.querySelectorAll('.tp-plot-point-input')).map(i => i.value).filter(Boolean);
+                            tp.invoked_characters = Array.from(tpEditor.querySelectorAll('.tp-char-input')).map(i => i.value).filter(Boolean);
+                            tp.notes = tpEditor.querySelector('#tp-notes-input').value;
+                            logEvent(`Ponto de Virada "${tp.title}" salvo.`);
+                            renderTurningPoints();
+                            showToast("Ponto de virada salvo!");
+                        }
+                    } else if (e.target.matches('#delete-tp-btn')) {
+                        const tpTitle = state.turning_points.find(t => t.id === activeSelections.tpId)?.title;
+                        state.turning_points = state.turning_points.filter(t => t.id !== activeSelections.tpId);
+                        activeSelections.tpId = null;
+                        logEvent(`Ponto de Virada "${tpTitle}" removido.`);
+                        renderAll();
+                    }
+                }
             });
 
             // Eventos do Modal
             document.getElementById('modal').addEventListener('click', (e) => {
-                // ... (toda a lógica de geração dentro dos modais)
+                const form = document.getElementById('char-gen-form');
+                if (e.target.matches('.cancel-modal-btn')) modal.close();
+                if (form && (e.target.matches('#generate-char-attrs-btn') || e.target.matches('.reroll-btn'))) {
+                    const isReroll = e.target.matches('.reroll-btn');
+                    const data = JSON.parse(form.dataset.generated || '{}');
+                    if (!isReroll || !data.special_trait) {
+                        const characteristic = getPhraseByRoll(charactersData.special_characteristics, rollDie(100));
+                        if(characteristic){
+                            data.special_trait = characteristic.value[0];
+                            data.emoji = characteristic.value[1];
+                            document.getElementById('char-gen-special').textContent = `${data.special_trait} ${data.emoji}`;
+                        }
+                    }
+                    if (!isReroll || e.target.dataset.type === 'identities') {
+                        const num = rollDie(100) <= 33 ? 2 : 1;
+                        data.identities = Array.from({ length: num }, () => shufflers.characters.identities.next());
+                        document.getElementById('char-gen-identities').textContent = data.identities.join(', ');
+                    }
+                    if (!isReroll || e.target.dataset.type === 'descriptors') {
+                        const num = rollDie(100) <= 21 ? 2 : 1;
+                        data.descriptors = Array.from({ length: num }, () => shufflers.characters.descriptors.next());
+                        document.getElementById('char-gen-descriptors').textContent = data.descriptors.join(', ');
+                    }
+                    form.dataset.generated = JSON.stringify(data);
+                }
+                if (e.target.matches('#generate-char-name-btn')) {
+                    const theme = document.getElementById('char-name-theme').value;
+                    const [firstNameShuffler, lastNameShuffler] = shufflers.characters.name_parts[theme];
+                    let name = `${firstNameShuffler.next()} ${lastNameShuffler.next()}`;
+                    if (theme === "Ficção Científica" && rollDie(100) <= 20) name = `${firstNameShuffler.next()}${lastNameShuffler.next()}-${rollDie(899) + 100}`;
+                    document.getElementById('char-name-input').value = name;
+                }
+                if (e.target.matches('#confirm-add-char-btn')) {
+                    const name = document.getElementById('char-name-input').value;
+                    if (!name) { showToast("Por favor, insira um nome."); return; }
+                    const data = JSON.parse(form.dataset.generated || '{}');
+                    const newChar = { 
+                        id: Date.now(), name, notes: '',
+                        special_trait: data.special_trait || 'Não gerado',
+                        emoji: data.emoji || '�',
+                        identities: data.identities || [],
+                        descriptors: data.descriptors || [],
+                    };
+                    state.characters.push(newChar);
+                    logEvent(`Personagem "${name}" criado.`);
+                    renderCharacters();
+                    modal.close();
+                }
+                if (e.target.matches('#generate-plot-desc-btn')) {
+                    const theme = document.getElementById('plot-theme').value;
+                    const { goals, subjects, focuses } = shufflers.plotlines[theme];
+                    const desc = `${goals.next()} ${subjects.next()} ${focuses.next()}.`;
+                    document.getElementById('generated-plot-desc').textContent = desc;
+                    document.getElementById('confirm-add-plot-btn').dataset.description = desc;
+                }
+                if (e.target.matches('#confirm-add-plot-btn')) {
+                    const name = document.getElementById('plot-name-modal-input').value;
+                    const desc = e.target.dataset.description || 'Adicionado manualmente.';
+                    if (!name) { showToast("Por favor, dê um nome para o enredo."); return; }
+                    const newPlot = { id: Date.now(), name, full_description: desc, notes: '' };
+                    state.plotlines.push(newPlot);
+                    logEvent(`Linha de enredo "${name}" criada.`);
+                    renderAll();
+                    modal.close();
+                }
             });
 
             // Botões do Cabeçalho e Notas
-            document.getElementById('save-btn').addEventListener('click', () => { /* ... */ });
-            document.getElementById('load-file').addEventListener('change', (e) => { /* ... */ });
-            document.getElementById('theme-switcher').addEventListener('click', () => { /* ... */ });
+            document.getElementById('save-btn').addEventListener('click', () => {
+                const dataStr = JSON.stringify(state, null, 2);
+                const link = document.createElement('a');
+                link.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+                link.download = `adventure-crafter-${new Date().toISOString().slice(0,10)}.json`;
+                link.click();
+                logEvent(`Aventura salva.`);
+            });
+            document.getElementById('load-file').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    try {
+                        const loaded = JSON.parse(ev.target.result);
+                        if ('characters' in loaded && 'plotlines' in loaded && 'turning_points' in loaded) {
+                            state = loaded;
+                            initializeShufflers();
+                            renderAll();
+                            logEvent(`Aventura carregada do arquivo: ${file.name}`);
+                            showToast("Aventura carregada!");
+                        } else throw new Error("Formato de arquivo inválido.");
+                    } catch (err) { showToast(`Erro ao carregar: ${err.message}`); }
+                };
+                reader.readAsText(file);
+                e.target.value = '';
+            });
+            document.getElementById('theme-switcher').addEventListener('click', () => {
+                document.body.classList.toggle('light-theme');
+                const isLight = document.body.classList.contains('light-theme');
+                state.theme = isLight ? 'light' : 'dark';
+                document.getElementById('theme-icon-dark').classList.toggle('hidden', isLight);
+                document.getElementById('theme-icon-light').classList.toggle('hidden', !isLight);
+            });
             document.getElementById('modal-close-btn').addEventListener('click', modal.close);
             modal.backdrop.addEventListener('click', modal.close);
-            document.getElementById('export-notes-btn').addEventListener('click', () => { /* ... */ });
+            document.getElementById('export-notes-btn').addEventListener('click', () => {
+                const blob = new Blob([state.history], {type: 'text/plain'});
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `anotacoes-aventura-${new Date().toISOString().slice(0,10)}.txt`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            });
             document.getElementById('clear-notes-btn').addEventListener('click', () => {
                 showConfirmationModal("Tem certeza que deseja limpar todo o registro de anotações?", () => {
                     state.history = "";
@@ -445,53 +607,51 @@
             document.getElementById('roll-focus-character').addEventListener('click', () => {
                 const roll = rollDie(100);
                 const result = getFocusResult('character', roll);
-                const resultEl = document.getElementById('focus-result-character');
-                resultEl.innerHTML = `<span class="font-bold text-lg">${roll}</span>: <span class="text-main">${result}</span>`;
+                document.getElementById('focus-result-character').innerHTML = `<span class="font-bold text-lg">${roll}</span>: <span class="text-main">${result}</span>`;
             });
             document.getElementById('roll-focus-plotline').addEventListener('click', () => {
                 const roll = rollDie(100);
                 const result = getFocusResult('plotline', roll);
-                const resultEl = document.getElementById('focus-result-plotline');
-                resultEl.innerHTML = `<span class="text-2xl font-bold">${roll}</span>: <span class="text-main">${result}</span>`;
+                document.getElementById('focus-result-plotline').innerHTML = `<span class="text-2xl font-bold">${roll}</span>: <span class="text-main">${result}</span>`;
             });
 
             // Rolador de Dados
-            document.querySelector('#dice-roller-tab').addEventListener('click', (e) => {
+            document.getElementById('dice-selector').addEventListener('click', (e) => {
                 if (e.target.matches('.dice-btn')) {
                     document.querySelectorAll('.dice-btn').forEach(btn => btn.classList.remove('selected'));
                     e.target.classList.add('selected');
                     diceRollerState.selectedDie = parseInt(e.target.dataset.die);
                 }
-                if (e.target.matches('#roll-dice-btn')) {
-                    const quantity = parseInt(document.getElementById('dice-quantity').value) || 1;
-                    const modifier = parseInt(document.getElementById('dice-modifier').value) || 0;
-                    const die = diceRollerState.selectedDie;
-                    let total = 0;
-                    const rolls = [];
-                    for (let i = 0; i < quantity; i++) {
-                        const roll = rollDie(die);
-                        rolls.push(roll);
-                        total += roll;
-                    }
-                    total += modifier;
-                    const details = `Detalhes: ${rolls.map(r => `[${r}]`).join(' + ')} ${modifier !== 0 ? (modifier > 0 ? `+ ${modifier}`: `- ${Math.abs(modifier)}`) : ''}`;
-                    document.getElementById('dice-result-display').innerHTML = `<p class="text-4xl font-bold font-title">${total}</p><p class="text-xs text-muted">${details}</p>`;
+            });
+            document.getElementById('roll-dice-btn').addEventListener('click', () => {
+                const quantity = parseInt(document.getElementById('dice-quantity').value) || 1;
+                const modifier = parseInt(document.getElementById('dice-modifier').value) || 0;
+                const die = diceRollerState.selectedDie;
+                let total = 0;
+                const rolls = [];
+                for (let i = 0; i < quantity; i++) {
+                    const roll = rollDie(die);
+                    rolls.push(roll);
+                    total += roll;
                 }
-                if (e.target.matches('#run-fairness-test-btn')) {
-                    const numRolls = parseInt(document.getElementById('fairness-rolls').value);
-                    const dieSize = diceRollerState.selectedDie;
-                    const results = {};
-                    for (let i = 0; i < numRolls; i++) {
-                        const roll = rollDie(dieSize);
-                        results[roll] = (results[roll] || 0) + 1;
-                    }
-                    updateFairnessChart(dieSize, results);
+                total += modifier;
+                const details = `Detalhes: ${rolls.map(r => `[${r}]`).join(' + ')} ${modifier !== 0 ? (modifier > 0 ? `+ ${modifier}`: `- ${Math.abs(modifier)}`) : ''}`;
+                document.getElementById('dice-result-display').innerHTML = `<p class="text-4xl font-bold font-title">${total}</p><p class="text-xs text-muted">${details}</p>`;
+            });
+            document.getElementById('run-fairness-test-btn').addEventListener('click', () => {
+                const numRolls = parseInt(document.getElementById('fairness-rolls').value);
+                const dieSize = diceRollerState.selectedDie;
+                const results = {};
+                for (let i = 0; i < numRolls; i++) {
+                    const roll = rollDie(dieSize);
+                    results[roll] = (results[roll] || 0) + 1;
                 }
+                updateFairnessChart(dieSize, results);
             });
         }
 
         // --- Inicialização da Aplicação ---
-        async function init() {
+        const init = async () => {
             try {
                 [plotlinesData, charactersData, phrasesData] = await Promise.all([
                     fetchData('plotlines.json'),
@@ -518,10 +678,11 @@
                 loadingOverlay.style.display = 'none';
                 appContainer.style.opacity = '1';
             }, 300);
-        }
+        };
 
         init();
     });
     </script>
 </body>
 </html>
+�

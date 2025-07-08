@@ -82,7 +82,7 @@
         <header class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-3xl font-title">Adventure Crafter</h1>
-                <p class="text-muted">Web Edition v6.4 - Final</p>
+                <p class="text-muted">Web Edition v6.5 - Final</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button id="save-btn" class="px-3 py-2 text-sm font-medium text-white rounded-md btn-primary">Salvar</button>
@@ -107,8 +107,45 @@
         <!-- Conteúdo das Abas -->
         <main>
             <section id="generator-tab" class="tab-content active"><div class="grid grid-cols-1 lg:grid-cols-3 gap-6"><div class="lg:col-span-1 card p-6 rounded-lg shadow-md"><h2 class="text-xl font-title mb-4">Gerar Pontos de Enredo</h2><div class="space-y-4"><div><label for="theme-select" class="block text-sm font-medium text-muted mb-1">Tema</label><select id="theme-select" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary"></select></div><button id="generate-plot-point-btn" class="w-full py-3 rounded-md text-white font-semibold btn-accent shadow-lg transform hover:scale-105 transition-transform">Gerar</button></div></div><div id="result-display" class="lg:col-span-2 card p-6 rounded-lg shadow-md flex flex-col justify-center items-center text-center min-h-[200px] transition-colors duration-500"><div id="result-content"><h3 id="result-title" class="text-2xl font-title mb-2">Clique em 'Gerar' para começar</h3><p id="result-explanation" class="text-muted">Aguardando geração...</p></div></div></div></section>
-            <section id="characters-tab" class="tab-content"><div class="flex justify-between items-center mb-4"><h2 class="text-2xl font-title">Personagens</h2><button id="add-character-btn" class="px-4 py-2 rounded-md text-white font-semibold btn-accent">Novo Personagem</button></div><div id="character-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div></section>
-            <section id="plotlines-tab" class="tab-content"><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="md:col-span-1 card p-4 rounded-lg"><div class="flex justify-between items-center mb-2"><h2 class="text-xl font-title">Linhas de Enredo</h2><button id="add-plotline-btn" class="px-3 py-1 text-sm rounded-md text-white btn-accent">+</button></div><ul id="plotline-list" class="item-list border border-color rounded-md"></ul></div><div id="plotline-editor-panel" class="md:col-span-2 card p-6 rounded-lg editor-panel"></div></div></section>
+            
+            <section id="characters-tab" class="tab-content">
+                <div class="flex flex-wrap justify-between items-center mb-4 gap-4">
+                    <h2 class="text-2xl font-title">Personagens</h2>
+                    <div class="flex items-center space-x-4">
+                        <div class="card-light p-2 rounded-lg flex items-center space-x-3">
+                             <button id="roll-focus-character" class="px-3 py-1 text-sm rounded-md text-white btn-primary">Rolar Foco</button>
+                             <div id="focus-result-character" class="text-sm text-center">
+                                <span class="font-bold text-lg">--</span>: <span class="text-muted">...</span>
+                             </div>
+                        </div>
+                        <button id="add-character-btn" class="px-4 py-2 rounded-md text-white font-semibold btn-accent">Novo Personagem</button>
+                    </div>
+                </div>
+                <div id="character-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+            </section>
+
+            <section id="plotlines-tab" class="tab-content">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-1 card p-4 rounded-lg flex flex-col">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h2 class="text-xl font-title">Linhas de Enredo</h2>
+                                <button id="add-plotline-btn" class="px-3 py-1 text-sm rounded-md text-white btn-accent">+</button>
+                            </div>
+                            <ul id="plotline-list" class="item-list border border-color rounded-md"></ul>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-color">
+                            <h3 class="text-lg font-title mb-2 text-center">Rolador de Foco</h3>
+                            <button id="roll-focus-plotline" class="w-full py-2 rounded-md text-white font-semibold btn-primary mb-2">Rolar Foco (d100)</button>
+                            <div id="focus-result-plotline" class="text-center p-2 card-light rounded-md">
+                                <span class="text-2xl font-bold">--</span>: <span class="text-muted">Aguardando rolagem...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="plotline-editor-panel" class="md:col-span-2 card p-6 rounded-lg editor-panel"></div>
+                </div>
+            </section>
+
             <section id="turning_points-tab" class="tab-content"><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="md:col-span-1 card p-4 rounded-lg"><div class="flex justify-between items-center mb-2"><h2 class="text-xl font-title">Pontos de Virada</h2><button id="add-tp-btn" class="px-3 py-1 text-sm rounded-md text-white btn-accent">+</button></div><ul id="tp-list" class="item-list border border-color rounded-md"></ul></div><div id="tp-editor-panel" class="md:col-span-2 card p-6 rounded-lg editor-panel"></div></div></section>
             <section id="notes-tab" class="tab-content"><div class="card p-6 rounded-lg"><h2 class="text-xl font-title mb-4">Registro da Aventura</h2><textarea id="history-log" readonly class="w-full h-96 p-2 rounded-md card-light border-none font-mono text-sm"></textarea><div class="mt-4 flex justify-end space-x-2"><button id="export-notes-btn" class="px-4 py-2 rounded-md text-white btn-primary">Exportar</button><button id="clear-notes-btn" class="px-4 py-2 rounded-md text-white btn-danger">Limpar</button></div></div></section>
         </main>
@@ -161,7 +198,6 @@
             return; // Impede a execução do resto do app se os dados falharem
         }
         
-        // Esconde a tela de carregamento e mostra o app
         loadingOverlay.style.opacity = '0';
         setTimeout(() => {
             loadingOverlay.style.display = 'none';
@@ -191,11 +227,15 @@
         const shufflers = {};
         function initializeShufflers() {
             shufflers.plotlines = {};
-            for (const theme in plotlinesData) shufflers.plotlines[theme] = {
-                goals: new CycledShuffler(plotlinesData[theme].goals),
-                subjects: new CycledShuffler(plotlinesData[theme].subjects),
-                focuses: new CycledShuffler(plotlinesData[theme].focuses)
-            };
+            for (const theme in plotlinesData) {
+                if (plotlinesData[theme].goals) { // Garante que o tema tem a estrutura esperada
+                    shufflers.plotlines[theme] = {
+                        goals: new CycledShuffler(plotlinesData[theme].goals),
+                        subjects: new CycledShuffler(plotlinesData[theme].subjects),
+                        focuses: new CycledShuffler(plotlinesData[theme].focuses)
+                    };
+                }
+            }
             shufflers.characters = {
                 identities: new CycledShuffler(charactersData.identities),
                 descriptors: new CycledShuffler(charactersData.descriptors),
@@ -209,6 +249,21 @@
         
         const rollDie = (sides) => Math.floor(Math.random() * sides) + 1;
         const getPhraseByRoll = (table, roll) => table.find(item => roll >= item.range[0] && roll <= item.range[1]) || null;
+        
+        const getFocusResult = (type, roll) => {
+            const newRanges = {
+                plotline: [[5, 8], [21, 24], [37, 40], [53, 56], [69, 72], [85, 88]],
+                character: [[1, 8], [13, 16], [21, 28], [33, 44], [49, 52], [57, 60], [65, 72], [81, 88], [97, 100]]
+            };
+            const ranges = newRanges[type];
+            for (const range of ranges) {
+                if (roll >= range[0] && roll <= range[1]) {
+                    return type === 'plotline' ? "NOVO ENREDO" : "NOVO PERSONAGEM";
+                }
+            }
+            return type === 'plotline' ? "ESCOLHA O ENREDO MAIS LÓGICO" : "ESCOLHA O PERSONAGEM MAIS LÓGICO";
+        };
+
         const showToast = (message) => {
             const toast = document.getElementById('toast');
             document.getElementById('toast-message').textContent = message;
@@ -452,16 +507,20 @@
                 let roll = rollDie(100);
                 let originalRoll = roll;
                 let originalTheme = theme;
-                let phraseData = getPhraseByRoll(phrasesData[theme.toLowerCase()], roll);
-                
+                let phraseData;
                 let finalTheme = theme.toLowerCase();
                 let metaInfo = "";
 
-                if (phraseData && phraseData.title === "META") {
-                    finalTheme = 'meta';
-                    roll = rollDie(100);
+                if (finalTheme === 'meta') {
                     phraseData = getPhraseByRoll(phrasesData.meta, roll);
-                    metaInfo = ` (META! d100=${originalRoll} -> d100=${roll})`;
+                } else {
+                    phraseData = getPhraseByRoll(phrasesData[finalTheme], roll);
+                    if (phraseData && phraseData.title === "META") {
+                        finalTheme = 'meta';
+                        roll = rollDie(100);
+                        phraseData = getPhraseByRoll(phrasesData.meta, roll);
+                        metaInfo = ` (META! d100=${originalRoll} -> d100=${roll})`;
+                    }
                 }
                 
                 if (phraseData) {
@@ -683,14 +742,26 @@
                     showToast("Anotações limpas!");
                 });
             });
+
+            document.getElementById('roll-focus-character').addEventListener('click', () => {
+                const roll = rollDie(100);
+                const result = getFocusResult('character', roll);
+                const resultEl = document.getElementById('focus-result-character');
+                resultEl.innerHTML = `<span class="font-bold text-lg">${roll}</span>: <span class="text-main">${result}</span>`;
+            });
+
+            document.getElementById('roll-focus-plotline').addEventListener('click', () => {
+                const roll = rollDie(100);
+                const result = getFocusResult('plotline', roll);
+                const resultEl = document.getElementById('focus-result-plotline');
+                resultEl.innerHTML = `<span class="text-2xl font-bold">${roll}</span>: <span class="text-main">${result}</span>`;
+            });
         }
 
         // --- Inicialização da Aplicação ---
         function init() {
             const themeSelect = document.getElementById('theme-select');
-            // As chaves em phrases.json são minúsculas
             themeSelect.innerHTML = Object.keys(phrasesData)
-              .filter(t => t !== 'meta') // Não mostrar 'meta' como opção selecionável
               .map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('');
             
             initializeShufflers();

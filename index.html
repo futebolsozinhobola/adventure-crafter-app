@@ -7,12 +7,12 @@
     <!-- Carregamento de Fontes e CSS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Estilos customizados e sistema de temas */
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, .font-title { font-family: 'Poppins', sans-serif; }
+        body { font-family: 'Roboto', sans-serif; }
+        h1, h2, h3, .font-title { font-family: 'Roboto Slab', serif; }
         
         /* Tema Escuro (Padrão) */
         :root {
@@ -52,13 +52,6 @@
         .pop-in { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { from { transform: translateY(10px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-        
-        /* Animação para texto e cor do gerador */
-        .content-swap { animation: contentFade 0.4s ease-in-out; }
-        @keyframes contentFade {
-            0% { opacity: 0; transform: translateY(5px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
 
         /* Estilos do Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
@@ -92,7 +85,7 @@
         <header class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-3xl font-title">Adventure Crafter</h1>
-                <p class="text-muted">Web Edition v6.0 - Flexível</p>
+                <p class="text-muted">Web Edition v6.1 - Flexível</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button id="save-btn" class="px-3 py-2 text-sm font-medium text-white rounded-md btn-primary">Salvar</button>
@@ -185,7 +178,7 @@
 
         // --- Utilitários e Geradores ---
         const THEME_COLORS = { action: "#dc2626", tension: "#ea580c", mystery: "#7c3aed", social: "#be185d", personal: "#059669", meta: "#0891b2", default: "#475569" };
-        const THEME_EMOJIS = { action: "💥", tension: "⏳", mystery: "❓", social: "�", personal: "❤️", meta: "⚙️", default: "🎲" };
+        const THEME_EMOJIS = { action: "💥", tension: "⏳", mystery: "❓", social: "💬", personal: "❤️", meta: "⚙️", default: "🎲" };
 
         class CycledShuffler {
             constructor(items) { this._original = [...items]; this._shuffled = []; this._fill(); }
@@ -677,7 +670,7 @@
         // --- Inicialização da Aplicação ---
         function init() {
             const themeSelect = document.getElementById('theme-select');
-            themeSelect.innerHTML = Object.keys(phrasesData).filter(t => t !== 'meta').map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('');
+            themeSelect.innerHTML = Object.keys(phrasesData).map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('');
             
             initializeShufflers();
             setupEventListeners();
@@ -690,4 +683,3 @@
     </script>
 </body>
 </html>
-�

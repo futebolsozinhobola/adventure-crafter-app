@@ -81,7 +81,7 @@
         <header class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-3xl font-title">Adventure Crafter</h1>
-                <p class="text-muted">Web Edition v5.0 - Funcional</p>
+                <p class="text-muted">Web Edition v5.1 - Corrigida</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button id="save-btn" class="px-3 py-2 text-sm font-medium text-white rounded-md btn-primary">Salvar</button>
@@ -105,74 +105,11 @@
 
         <!-- Conteúdo das Abas -->
         <main>
-            <!-- Seção: Gerador -->
-            <section id="generator-tab" class="tab-content active">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-1 card p-6 rounded-lg shadow-md">
-                        <h2 class="text-xl font-title mb-4">Gerar Pontos de Enredo</h2>
-                        <div class="space-y-4">
-                            <div>
-                                <label for="theme-select" class="block text-sm font-medium text-muted mb-1">Tema</label>
-                                <select id="theme-select" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary"></select>
-                            </div>
-                            <button id="generate-plot-point-btn" class="w-full py-3 rounded-md text-white font-semibold btn-accent shadow-lg transform hover:scale-105 transition-transform">Gerar</button>
-                        </div>
-                    </div>
-                    <div id="result-display" class="lg:col-span-2 card p-6 rounded-lg shadow-md flex flex-col justify-center items-center text-center min-h-[200px]">
-                        <h3 id="result-title" class="text-2xl font-title mb-2">Clique em 'Gerar' para começar</h3>
-                        <p id="result-explanation" class="text-muted">Aguardando geração...</p>
-                    </div>
-                </section>
-            </section>
-
-            <!-- Seção: Personagens -->
-            <section id="characters-tab" class="tab-content">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-title">Personagens</h2>
-                    <button id="add-character-btn" class="px-4 py-2 rounded-md text-white font-semibold btn-accent">Novo Personagem</button>
-                </div>
-                <div id="character-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
-            </section>
-
-            <!-- Seção: Linhas de Enredo -->
-            <section id="plotlines-tab" class="tab-content">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="md:col-span-1 card p-4 rounded-lg">
-                        <div class="flex justify-between items-center mb-2">
-                            <h2 class="text-xl font-title">Linhas de Enredo</h2>
-                            <button id="add-plotline-btn" class="px-3 py-1 text-sm rounded-md text-white btn-accent">+</button>
-                        </div>
-                        <ul id="plotline-list" class="item-list border border-color rounded-md"></ul>
-                    </div>
-                    <div id="plotline-editor-panel" class="md:col-span-2 card p-6 rounded-lg editor-panel"></div>
-                </div>
-            </section>
-
-            <!-- Seção: Pontos de Virada -->
-            <section id="turning_points-tab" class="tab-content">
-                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="md:col-span-1 card p-4 rounded-lg">
-                        <div class="flex justify-between items-center mb-2">
-                            <h2 class="text-xl font-title">Pontos de Virada</h2>
-                            <button id="add-tp-btn" class="px-3 py-1 text-sm rounded-md text-white btn-accent">+</button>
-                        </div>
-                        <ul id="tp-list" class="item-list border border-color rounded-md"></ul>
-                    </div>
-                    <div id="tp-editor-panel" class="md:col-span-2 card p-6 rounded-lg editor-panel"></div>
-                </div>
-            </section>
-
-            <!-- Seção: Anotações -->
-            <section id="notes-tab" class="tab-content">
-                <div class="card p-6 rounded-lg">
-                    <h2 class="text-xl font-title mb-4">Registro da Aventura</h2>
-                    <textarea id="history-log" readonly class="w-full h-96 p-2 rounded-md card-light border-none font-mono text-sm"></textarea>
-                    <div class="mt-4 flex justify-end space-x-2">
-                        <button id="export-notes-btn" class="px-4 py-2 rounded-md text-white btn-primary">Exportar</button>
-                        <button id="clear-notes-btn" class="px-4 py-2 rounded-md text-white btn-danger">Limpar</button>
-                    </div>
-                </div>
-            </section>
+            <section id="generator-tab" class="tab-content active"><div class="grid grid-cols-1 lg:grid-cols-3 gap-6"><div class="lg:col-span-1 card p-6 rounded-lg shadow-md"><h2 class="text-xl font-title mb-4">Gerar Pontos de Enredo</h2><div class="space-y-4"><div><label for="theme-select" class="block text-sm font-medium text-muted mb-1">Tema</label><select id="theme-select" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary"></select></div><button id="generate-plot-point-btn" class="w-full py-3 rounded-md text-white font-semibold btn-accent shadow-lg transform hover:scale-105 transition-transform">Gerar</button></div></div><div id="result-display" class="lg:col-span-2 card p-6 rounded-lg shadow-md flex flex-col justify-center items-center text-center min-h-[200px]"><h3 id="result-title" class="text-2xl font-title mb-2">Clique em 'Gerar' para começar</h3><p id="result-explanation" class="text-muted">Aguardando geração...</p></div></div></section>
+            <section id="characters-tab" class="tab-content"><div class="flex justify-between items-center mb-4"><h2 class="text-2xl font-title">Personagens</h2><button id="add-character-btn" class="px-4 py-2 rounded-md text-white font-semibold btn-accent">Novo Personagem</button></div><div id="character-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div></section>
+            <section id="plotlines-tab" class="tab-content"><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="md:col-span-1 card p-4 rounded-lg"><div class="flex justify-between items-center mb-2"><h2 class="text-xl font-title">Linhas de Enredo</h2><button id="add-plotline-btn" class="px-3 py-1 text-sm rounded-md text-white btn-accent">+</button></div><ul id="plotline-list" class="item-list border border-color rounded-md"></ul></div><div id="plotline-editor-panel" class="md:col-span-2 card p-6 rounded-lg editor-panel"></div></div></section>
+            <section id="turning_points-tab" class="tab-content"><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="md:col-span-1 card p-4 rounded-lg"><div class="flex justify-between items-center mb-2"><h2 class="text-xl font-title">Pontos de Virada</h2><button id="add-tp-btn" class="px-3 py-1 text-sm rounded-md text-white btn-accent">+</button></div><ul id="tp-list" class="item-list border border-color rounded-md"></ul></div><div id="tp-editor-panel" class="md:col-span-2 card p-6 rounded-lg editor-panel"></div></div></section>
+            <section id="notes-tab" class="tab-content"><div class="card p-6 rounded-lg"><h2 class="text-xl font-title mb-4">Registro da Aventura</h2><textarea id="history-log" readonly class="w-full h-96 p-2 rounded-md card-light border-none font-mono text-sm"></textarea><div class="mt-4 flex justify-end space-x-2"><button id="export-notes-btn" class="px-4 py-2 rounded-md text-white btn-primary">Exportar</button><button id="clear-notes-btn" class="px-4 py-2 rounded-md text-white btn-danger">Limpar</button></div></div></section>
         </main>
     </div>
     
@@ -262,7 +199,7 @@
         }
         
         const rollDie = (sides) => Math.floor(Math.random() * sides) + 1;
-        const rollOnTable = (table, roll) => table.find(item => roll >= item.range[0] && roll <= item.range[1])?.value || null;
+        const getPhraseByRoll = (table, roll) => table.find(item => roll >= item.range[0] && roll <= item.range[1]) || null;
         const showToast = (message) => {
             const toast = document.getElementById('toast');
             document.getElementById('toast-message').textContent = message;
@@ -475,7 +412,6 @@
 
         // --- Event Listeners ---
         function setupEventListeners() {
-            // Navegação
             document.getElementById('tab-navigation').addEventListener('click', (e) => {
                 if (e.target.matches('.tab-button')) {
                     const tabId = e.target.dataset.tab;
@@ -486,26 +422,33 @@
                 }
             });
 
-            // Gerador Principal
             document.getElementById('generate-plot-point-btn').addEventListener('click', () => {
                 let theme = document.getElementById('theme-select').value;
                 let roll = rollDie(100);
-                let phraseData = rollOnTable(phrasesData[theme], roll);
+                let originalRoll = roll;
+                let originalTheme = theme;
+                let phraseData = getPhraseByRoll(phrasesData[theme], roll);
                 if (phraseData && phraseData.title === "META") {
                     theme = 'meta';
                     roll = rollDie(100);
-                    phraseData = rollOnTable(phrasesData[theme], roll);
+                    phraseData = getPhraseByRoll(phrasesData[theme], roll);
+                    logEvent(`Ponto de Enredo Gerado (${originalTheme.toUpperCase()} d100=${originalRoll} -> META d100=${roll}): ${phraseData.title}`);
+                } else {
+                    logEvent(`Ponto de Enredo Gerado (${theme.toUpperCase()} d100=${roll}): ${phraseData.title}`);
                 }
-                const resultDisplay = document.getElementById('result-display');
-                resultDisplay.classList.remove('fade-in');
-                void resultDisplay.offsetWidth;
-                resultDisplay.classList.add('fade-in');
-                document.getElementById('result-title').textContent = phraseData.title;
-                document.getElementById('result-explanation').textContent = phraseData.desc;
-                logEvent(`Ponto de Enredo Gerado (${theme}): ${phraseData.title}`);
+                if (phraseData) {
+                    const resultDisplay = document.getElementById('result-display');
+                    resultDisplay.classList.remove('fade-in');
+                    void resultDisplay.offsetWidth;
+                    resultDisplay.classList.add('fade-in');
+                    document.getElementById('result-title').textContent = phraseData.title;
+                    document.getElementById('result-explanation').textContent = phraseData.desc;
+                } else {
+                    document.getElementById('result-title').textContent = "Erro";
+                    document.getElementById('result-explanation').textContent = `Nenhum resultado encontrado para o tema '${theme}' com a rolagem ${roll}.`;
+                }
             });
             
-            // Botões de Adicionar
             document.getElementById('add-character-btn').addEventListener('click', showCharacterGenerator);
             document.getElementById('add-plotline-btn').addEventListener('click', showPlotlineGenerator);
             document.getElementById('add-tp-btn').addEventListener('click', () => {
@@ -516,7 +459,6 @@
                 renderAll();
             });
 
-            // Seleção e Edição
             DOM.plotlineList.addEventListener('click', (e) => {
                 if (e.target.matches('li')) { activeSelections.plotlineId = parseInt(e.target.dataset.id); renderAll(); }
             });
@@ -524,7 +466,6 @@
                 if (e.target.matches('li')) { activeSelections.tpId = parseInt(e.target.dataset.id); renderAll(); }
             });
             
-            // Eventos delegados para elementos dinâmicos
             document.getElementById('app-container').addEventListener('click', (e) => {
                 const plotEditor = e.target.closest('#plotline-editor-panel');
                 if (plotEditor) {
@@ -584,16 +525,14 @@
                 }
             });
 
-            // Modal
             document.getElementById('modal').addEventListener('click', (e) => {
                 if (e.target.matches('.cancel-modal-btn')) modal.close();
                 if (e.target.matches('#generate-char-attrs-btn') || e.target.matches('.reroll-btn')) {
                     const form = document.getElementById('char-gen-form');
                     const isReroll = e.target.matches('.reroll-btn');
                     const data = JSON.parse(form.dataset.generated || '{}');
-                    
                     if (!isReroll || !data.special_trait) {
-                        const [special_trait, emoji] = rollOnTable(charactersData.special_characteristics, rollDie(100));
+                        const [special_trait, emoji] = getPhraseByRoll(charactersData.special_characteristics, rollDie(100));
                         data.special_trait = special_trait;
                         data.emoji = emoji;
                         document.getElementById('char-gen-special').textContent = `${special_trait} ${emoji}`;
@@ -646,7 +585,6 @@
                 }
             });
             
-            // Salvar/Carregar e Tema
             document.getElementById('save-btn').addEventListener('click', () => {
                 const dataStr = JSON.stringify(state, null, 2);
                 const link = document.createElement('a');

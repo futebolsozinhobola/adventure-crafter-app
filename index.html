@@ -81,7 +81,7 @@
         <header class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-3xl font-title">Adventure Crafter</h1>
-                <p class="text-muted">Web Edition v4.0 - Final</p>
+                <p class="text-muted">Web Edition v4.1 - Reconstruído</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button id="save-btn" class="px-3 py-2 text-sm font-medium text-white rounded-md btn-primary">Salvar</button>
@@ -499,7 +499,6 @@
             
             // Eventos delegados para elementos dinâmicos
             document.getElementById('app-container').addEventListener('click', (e) => {
-                // Salvar e Deletar nos painéis de edição
                 const plotEditor = e.target.closest('#plotline-editor-panel');
                 if (plotEditor) {
                     if (e.target.matches('#save-plotline-btn')) {
@@ -537,7 +536,6 @@
                         renderAll();
                     }
                 }
-                // Deleção de cards de personagem
                 if (e.target.matches('.delete-btn[data-type="character"]')) {
                     state.characters = state.characters.filter(c => c.id !== parseInt(e.target.dataset.id));
                     renderCharacters();
@@ -554,29 +552,45 @@
             // Modal
             document.getElementById('modal').addEventListener('click', (e) => {
                 if (e.target.matches('.cancel-modal-btn')) modal.close();
-                // Geração de personagem no modal
-                if (e.target.matches('#generate-char-attrs-btn')) {
+                if (e.target.matches('#generate-char-attrs-btn') || e.target.matches('.reroll-btn')) {
                     const form = document.getElementById('char-gen-form');
-                    const [special_trait, emoji] = rollOnTable(charactersData.special_characteristics, rollDie(100));
-                    const identities = Array.from({ length: rollDie(100) <= 33 ? 2 : 1 }, () => shufflers.characters.identities.next());
-                    const descriptors = Array.from({ length: rollDie(100) <= 21 ? 2 : 1 }, () => shufflers.characters.descriptors.next());
-                    form.dataset.generated = JSON.stringify({ special_trait, emoji, identities, descriptors });
-                    document.getElementById('char-gen-special').textContent = `${special_trait} ${emoji}`;
-                    document.getElementById('char-gen-identities').textContent = identities.join(', ');
-                    document.getElementById('char-gen-descriptors').textContent = descriptors.join(', ');
-                }
-                if (e.target.matches('.reroll-btn')) {
-                    const type = e.target.dataset.type;
-                    const span = document.getElementById(`char-gen-${type}`);
-                    const form = document.getElementById('char-gen-form');
+                    const isReroll = e.target.matches('.reroll-btn');
                     const data = JSON.parse(form.dataset.generated || '{}');
-                    const num = rollDie(100) <= (type === 'identities' ? 33 : 21) ? 2 : 1;
-                    const newAttrs = Array.from({ length: num }, () => shufflers.characters[type].next());
-                    data[type] = newAttrs;
-                    span.textContent = newAttrs.join(', ');
+                    
+                    if (!isReroll || !data.special_trait) {
+                        const [special_trait, emoji] = rollOnTable(charactersData.special_characteristics, rollDie(100));
+                        data.special_trait = special_trait;
+                        data.emoji = emoji;
+                        document.getElementById('char-gen-special').textContent = `${special_trait} ${emoji}`;
+                    }
+                    if (!isReroll || e.target.dataset.type === 'identities') {
+                        const num = rollDie(100) <= 33 ? 2 : 1;
+                        data.identities = Array.from({ length: num }, () => shufflers.characters.identities.next());
+                        document.getElementById('char-gen-identities').textContent = data.identities.join(', ');
+                    }
+                    if (!isReroll || e.target.dataset.type === 'descriptors') {
+                        const num = rollDie(100) <= 21 ? 2 : 1;
+                        data.descriptors = Array.from({ length: num }, () => shufflers.characters.descriptors.next());
+                        document.getElementById('char-gen-descriptors').textContent = data.descriptors.join(', ');
+                    }
                     form.dataset.generated = JSON.stringify(data);
                 }
-                // Geração de enredo no modal
+                if (e.target.matches('#generate-char-name-btn')) {
+                    const theme = document.getElementById('char-name-theme').value;
+                    const [firstNameShuffler, lastNameShuffler] = shufflers.characters.name_parts[theme];
+                    let name = `${firstNameShuffler.next()} ${lastNameShuffler.next()}`;
+                    if (theme === "Ficção Científica" && rollDie(100) <= 20) name = `${firstNameShuffler.next()}${lastNameShuffler.next()}-${rollDie(899) + 100}`;
+                    document.getElementById('char-name-input').value = name;
+                }
+                if (e.target.matches('#confirm-add-char-btn')) {
+                    const name = document.getElementById('char-name-input').value;
+                    const data = JSON.parse(document.getElementById('char-gen-form').dataset.generated || '{}');
+                    if (!name || !data.special_trait) { showToast("Gere um nome e atributos primeiro."); return; }
+                    const newChar = { id: Date.now(), name, ...data, notes: '' };
+                    state.characters.push(newChar);
+                    renderCharacters();
+                    modal.close();
+                }
                 if (e.target.matches('#generate-plot-desc-btn')) {
                     const theme = document.getElementById('plot-theme').value;
                     const { goals, subjects, focuses } = shufflers.plotlines[theme];
@@ -584,7 +598,6 @@
                     document.getElementById('generated-plot-desc').textContent = desc;
                     document.getElementById('confirm-add-plot-btn').dataset.description = desc;
                 }
-
                 if (e.target.matches('#confirm-add-plot-btn')) {
                     const name = document.getElementById('plot-name-modal-input').value;
                     const desc = e.target.dataset.description;

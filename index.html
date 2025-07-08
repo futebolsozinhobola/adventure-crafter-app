@@ -177,7 +177,7 @@
                         <div class="card-light p-2 rounded-lg flex items-center space-x-3">
                              <button id="roll-focus-character" class="px-3 py-1 text-sm rounded-md text-white btn-primary">Rolar Foco</button>
                              <div id="focus-result-character" class="text-sm text-center">
-                                <span class="font-bold text-lg">--</span>: <span class="text-muted">...</span>
+                                 <span class="font-bold text-lg">--</span>: <span class="text-muted">...</span>
                              </div>
                         </div>
                         <button id="add-character-btn" class="px-4 py-2 rounded-md text-white font-semibold btn-accent">Novo Personagem</button>
@@ -227,9 +227,362 @@
         <p id="toast-message" class="text-text-main"></p>
     </div>
     
+    <!-- === [CORREÇÃO 1] DADOS EXTERNALIZADOS EM SCRIPT TAGS === -->
+    <script>
+        const plotlinesData = {
+          "Fantasia": {
+            "goals": ["Proteger", "Destruir", "Resgatar", "Descobrir", "Investigar", "Escapar de", "Transportar", "Adquirir", "Defender", "Atacar", "Sabotar", "Negociar com", "Infiltrar-se em", "Mapear", "Construir", "Curar", "Vingar-se de", "Unir", "Controlar", "Seguir", "Convocar", "Banir", "Decifrar", "Forjar", "Restaurar", "Libertar"],
+            "subjects": ["uma relíquia antiga", "uma sociedade secreta", "uma conspiração no reino", "uma maldição esquecida", "um portal místico", "uma criatura lendária", "um nobre corrupto", "um segredo de família", "uma fonte de poder", "um território disputado", "uma guilda de ladrões", "um culto apocalíptico", "uma praga mágica", "o último de uma espécie", "uma memória perdida", "um item roubado", "um artefato amaldiçoado", "o último ovo de dragão", "uma cidade perdida nas nuvens", "o trono usurpado", "uma lágrima de deusa"],
+            "focuses": ["em uma cidade submersa", "antes que a lua de sangue chegue", "com a ajuda de um traidor", "sem que a guarda real saiba", "para cumprir uma profecia", "contra um lorde rival", "usando um disfarce arcano", "em troca de um tesouro", "para salvar uma linhagem real", "em um local sagrado", "nas profundezas de uma masmorra", "sob o olhar dos deuses antigos", "para quebrar um pacto de sangue", "durante o alinhamento das estrelas"]
+          },
+          "Ficção Científica": {
+            "goals": ["Transportar", "Investigar", "Escapar de", "Sabotar", "Adquirir", "Reativar", "Destruir", "Contrabandear", "Mapear", "Resgatar", "Defender", "Negociar com", "Infiltrar-se em", "Analisar", "Proteger", "Hackear", "Colonizar", "Terraformar", "Decodificar", "Ativar", "Desativar"],
+            "subjects": ["dados corporativos roubados", "um sinal alienígena", "uma estação espacial abandonada", "uma IA desonesta", "uma nave experimental", "uma anomalia quântica", "uma colônia perdida", "uma tecnologia proibida", "um fugitivo perigoso", "uma carga misteriosa", "um artefato precursor", "um sistema de defesa planetário", "uma conspiração sintética", "um código-fonte senciente", "os destroços de uma nave precursora", "um vírus nanotecnológico", "um buraco de minhoca instável", "o genoma de uma espécie extinta"],
+            "focuses": ["antes que o reator entre em colapso", "no setor proibido", "com a ajuda de um contrabandista", "evitando as patrulhas da frota", "para prevenir uma guerra galáctica", "em um planeta hostil", "usando implantes cibernéticos", "por uma grande soma de créditos", "para limpar o nome de alguém", "em uma nebulosa perigosa", "em um anel orbital", "antes que a singularidade se expanda", "usando uma camuflagem holográfica", "para impedir um paradoxo temporal", "no coração de uma megaestrutura alienígena"]
+          },
+          "Contemporâneo": {
+            "goals": ["Investigar", "Expor", "Proteger", "Recuperar", "Infiltrar-se em", "Sabotar", "Negociar com", "Seguir", "Resgatar", "Transportar", "Desmantelar", "Incriminar", "Defender", "Adquirir", "Vazar", "Fabricar (provas)", "Testemunhar contra", "Caçar", "Desaparecer com"],
+            "subjects": ["uma conspiração corporativa", "um político corrupto", "uma operação de contrabando", "o desaparecimento de uma pessoa", "uma testemunha chave", "informações sigilosas", "uma célula terrorista", "uma obra de arte roubada", "um cartel de drogas", "um programa secreto do governo", "uma nova droga sintética", "uma rede de hackers", "um segredo de estado", "uma rede de lavagem de dinheiro", "um algoritmo de vigilância em massa", "o resultado de uma eleição", "uma arma biológica"],
+            "focuses": ["no coração da cidade", "antes que a mídia descubra", "com a ajuda de um contato da agência", "usando identidades falsas", "para evitar um escândalo internacional", "contra uma agência de segurança privada", "em uma gala de alta sociedade", "em troca de anistia", "para pagar uma dívida antiga", "em um país estrangeiro", "em uma zona de guerra", "sob proteção a testemunhas", "para expor a corrupção na mídia", "usando a dark web", "antes da reunião do conselho"]
+          },
+          "Terror / Gótico": {
+            "goals": ["Sobreviver a", "Banir", "Conter", "Investigar", "Escapar de", "Apaziguar", "Despertar", "Destruir", "Documentar", "Purificar", "Esconder-se de", "Entender", "Sacrificar", "Proteger"],
+            "subjects": ["uma entidade ancestral", "o diário de um louco", "uma casa mal-assombrada", "a maldição de uma família", "um ritual profano", "o último descendente de um bruxo", "uma série de assassinatos ritualísticos", "um artefato que corrompe", "uma presença invisível", "o segredo sombrio da cidade", "uma criatura do folclore local", "um pacto demoníaco"],
+            "focuses": ["durante uma noite de tempestade", "em um asilo abandonado", "para impedir que o mal se espalhe", "seguindo as regras de um jogo macabro", "antes que a última vela se apague", "no aniversário da tragédia", "em um cemitério profanado", "com a sanidade se esvaindo", "para salvar a alma de um ente querido", "enquanto é caçado implacavelmente"]
+          },
+          "Mistério / Policial (Noir)": {
+            "goals": ["Resolver", "Encontrar", "Proteger", "Incriminar", "Seguir", "Desvendar", "Chantagear", "Vingar", "Investigar", "Recuperar", "Silenciar", "Expor", "Sobreviver a", "Negociar com"],
+            "subjects": ["o assassinato de um magnata", "a femme fatale", "uma dívida de jogo", "uma herança disputada", "o policial corrupto", "uma fotografia comprometedora", "o segredo de uma estrela de cinema", "uma carga roubada das docas", "um político com um passado sujo", "o informante desaparecido", "uma joia amaldiçoada", "o álibi de um mafioso"],
+            "focuses": ["nas ruas chuvosas da cidade", "em um clube de jazz clandestino", "com a polícia no seu encalço", "para pagar uma dívida com a máfia", "antes que o verdadeiro assassino ataque novamente", "no escritório do detetive", "em um beco sem saída", "com uma arma apontada para a cabeça", "por uma garrafa de uísque barato", "para a mulher que partiu seu coração"]
+          },
+          "Aventura / Faroeste": {
+            "goals": ["Escolta", "Caçar", "Defender", "Reivindicar", "Construir", "Entregar", "Dinamitar", "Duelar com", "Rastrear", "Libertar", "Proteger", "Atravessar", "Roubar", "Negociar com"],
+            "subjects": ["uma carga de ouro", "um barão de terras ganancioso", "a escritura da cidade", "o último trem", "uma gangue de foras-da-lei", "um mapa do tesouro perdido", "o novo xerife", "uma manada de gado", "um fugitivo da lei", "uma família de colonos", "a única fonte de água da região", "o projeto de uma nova ferrovia"],
+            "focuses": ["através do desfiladeiro", "antes que a cavalaria chegue", "em um duelo ao meio-dia", "para proteger a fazenda da família", "durante a corrida do ouro", "em um forte sitiado", "com uma recompensa pela cabeça", "no território Apache", "durante uma tempestade de areia", "contra o seu antigo parceiro"]
+          },
+          "Steampunk": {
+            "goals": ["Projetar", "Pilotar", "Sabotar", "Apresentar", "Roubar", "Financiar", "Desacreditar", "Aperfeiçoar", "Resgatar", "Investigar", "Construir", "Reivindicar", "Defender", "Transportar"],
+            "subjects": ["um automato senciente", "os planos de um novo dirigível de guerra", "uma fonte de energía revolucionária", "uma conspiração da Guilda dos Inventores", "o motor analítico", "uma expedição a um mundo perdido", "uma arma sônica", "um artefato da era do vapor", "um cientista rival", "o segredo da automação", "uma fórmula alquímica", "o protótipo de um cronômetro"],
+            "focuses": ["na Grande Exposição Universal", "para ganhar o patrocínio da Rainha", "a bordo de um zepelim de luxo", "contra um rival industrial", "usando engrenagens de precisão", "para provar uma nova teoria científica", "nas oficinas subterrâneas da cidade", "com a ajuda de um automato leal", "para o Clube dos Aventureiros", "em um laboratório secreto"]
+          },
+          "Cyberpunk": {
+            "goals": ["Hackear", "Extrair", "Contrabandear", "Proteger", "Expor", "Apagar", "Sobreviver a", "Derrubar", "Infiltrar-se em", "Resgatar", "Transportar", "Adquirir", "Investigar", "Modificar"],
+            "subjects": ["uma IA corporativa", "um chip de memória ilegal", "um mercenário com implantes militares", "a consciência de um hacker morto", "um vírus que ataca o ciberespaço", "o código-fonte de uma arma digital", "a localização de um servidor fantasma", "um protótipo de ciber-implante", "um executivo corrupto", "a identidade de um netrunner lendário", "um lote de drogas de combate", "um segredo que pode derrubar uma mega-corporação"],
+            "focuses": ["nas profundezas da Matriz", "antes que a segurança da corporação o encontre", "em troca de um novo cromo", "para uma Yakuza local", "usando um deck personalizado", "no distrito de neon", "para derrubar o sistema de vigilância", "com a ajuda de uma gangue de rua", "em uma cidade vertical", "para pagar uma dívida com um fixer"]
+          }
+        };
+        const charactersData = {
+          "special_characteristics": [
+            { "range": [1, 50], "value": ["Individual", "👤"] },
+            { "range": [51, 57], "value": ["Organização", "🏢"] },
+            { "range": [58, 64], "value": ["Objeto", "🔮"] },
+            { "range": [65, 71], "value": ["Conectado à Trama", "🔗"] },
+            { "range": [72, 78], "value": ["Não Conectado à Trama", "🤷"] },
+            { "range": [79, 85], "value": ["Ajuda na Trama", "👍"] },
+            { "range": [86, 92], "value": ["Atrapalha a Trama", "👎"] },
+            { "range": [93, 100], "value": ["Conectado a Personagem Existente", "🤝"] }
+          ],
+          "identities": [
+            "Guerreiro", "Curandeiro", "Protetor", "Assistente", "Dependente", "Governante", "Administrador", "Vítima", "Estudioso", "Especialista", "Elite", "Investigador", "Criminoso", "Apoiador", "Indefeso", "Forasteiro", "Mediador", "Artista", "Socialite", "Atleta", "Intérprete", "Representante", "Mercador", "Comerciante", "Criador", "Servo", "Trabalhador", "Religioso", "Caçador", "Líder", "Lutador", "Artesão", "Ladrão", "Radical", "Executivo", "Bandido", "Guarda", "Guardião", "Explorador", "Herói", "Vilão", "Enganador", "Engenheiro", "Batedor", "Consertador", "Andarilho", "Subversivo", "Soldado", "Policial", "Cientista", "Coletor", "Estrangeiro", "Sobrevivente", "Apostador", "Vigarista", "Fazendeiro", "Assassino", "Profissional", "Motorista/Piloto", "Estudante", "Organizador", "Entregador", "Lacaio", "Professor", "Exótico"
+          ],
+          "descriptors": [
+            "Feio", "Belo", "Sujo", "Doce", "Incomum", "Comum", "Inteligente", "Ignorante", "Educado", "Habilidoso", "Treinado", "Rude", "Polido", "Chique", "Áspero", "Limpo", "Rico", "Pobre", "Pequeno", "Grande", "Quieto", "Barulhento", "Rápido", "Lento", "Exótico", "Uniformizado", "Interessante", "Colorido", "Informativo", "Perigoso", "Inepto", "Desajeitado", "Capaz", "Intrusivo", "Respeitoso", "Primitivo", "Sofisticado", "Elegante", "Armado", "Diferente", "Jovem", "Velho", "Difícil", "Prestativo", "Nocivo", "Disciplinado", "Errático", "Selvagem", "Louco", "Imponente", "Manso", "Bem-humorado", "Assustado", "Corajoso", "Forte", "Fraco", "Impulsivo", "Estratégico", "Ingênuo", "Confiante", "Surpreendente", "Passivo", "Ousado", "Descuidado", "Cauteloso", "Furtivo", "Intimidador", "Poderoso", "Impotente", "Ferido", "Ríspido", "Gentil", "Carinhoso", "Íntegro", "Arrogante", "Curioso", "Solidário", "Heroico"
+          ],
+          "name_parts": {
+            "Fantasia": [
+              ["Arion", "Elara", "Kael", "Thorne", "Lirael", "Zarek", "Alistair", "Briar", "Caspian", "Darian", "Elowen", "Faelan", "Gareth", "Gwendolyn", "Hadriel", "Isolde", "Joric", "Kaelen", "Lyra", "Merek", "Niamh", "Orin", "Perrin", "Quillan", "Rhiannon", "Seraphina", "Talon", "Uther", "Valerius", "Xylia", "Yseult", "Zephyr", "Aerion", "Bronwyn", "Corvus", "Daelan", "Elysia", "Fenris", "Galadriel", "Haldor", "Ithiliel", "Jorvik", "Kaelus", "Lira", "Marius", "Nyx", "Orion", "Pyralia", "Qyran", "Roric", "Sorin", "Tauriel", "Alaric", "Briseis", "Caelan", "Dracon", "Eira", "Fendrel", "Gorok", "Halia", "Icarus", "Jorah", "Kyra", "Leoric", "Morgana", "Oberon", "Phaedra", "Quintus", "Ravenna", "Silvanus", "Tamsin", "Ulrich", "Vespera", "Wren", "Xander", "Yvaine", "Zosimus", "Aeliana", "Baelor", "Cerys", "Draven", "Evadne", "Faelar", "Grimgar", "Hesperia", "lone", "Jareth", "Annon", "Bastian", "Circe", "Darius", "Elara", "Finnian", "Gideon", "Heleth", "Ilyana", "Kael", "Lianna", "Malachi", "Nerys", "Orion", "Pryderi", "Ren", "Saskia", "Torin", "Vala", "Wynn", "Xylos", "Zaltar"],
+              ["Silverwood", "Stormwind", "Ironhand", "Moonshadow", "Ashworth", "Blackwood", "Craghammer", "Dawnbringer", "Everflame", "Frostbeard", "Greycastle", "Highcliff", "Ironforge", "Jadefall", "Lightbringer", "Nightshade", "Oakenhield", "Proudmoore", "Quickbow", "Ravenspire", "Shadowalker", "Thunderstrike", "Underbough", "Voidgazer", "Whisperwind", "Wyrmsbane", "Yarrow", "Zephyrson", "Cinderfall", "Dragonfyre", "Starfall", "Sunstrider", "Stonefist", "Wintergale", "o Sábio", "da Floresta Sussurrante", "Matador de Dragões", "Coração de Leão", "Mão de Prata", "Olho de Estrela", "Lâmina Negra", "Escudo de Carvalho", "Andarilho das Sombras", "Portador da Luz", "Coroa de Espinhos", "Manto de Névoa", "de Alta Torre", "Filho do Trovão", "Nascido do Fogo", "Alma de Gelo", "Guardião da Aurora", "Caçador de Espectros", "Herdeiro do Vazio", "Mão de Ferro", "Lança do Destino", "das Terras Ermas", "o Encantado", "Canção do Rio", "Martelo de Guerra", "o Errante", "Sopro de Inverno", "o Imortal", "de Valdria", "o Conquistador", "o Vidente", "o Bardo", "o Protetor"]
+            ],
+            "Fantasia (Organizações)": [
+              ["Ordem", "Guilda", "Círculo", "Irmandade", "Clã", "Casa", "Legião", "Conclave", "Sociedade", "Aliança", "Coven", "Capítulo", "Conselho", "Corte"],
+              ["da Chama Eterna", "do Dragão Adormecido", "da Lâmina de Prata", "dos Magos de Gelo", "da Montanha Solitária", "dos Caçadores de Sombras", "do Carvalho Ancestral", "da Aurora Dourada", "do Corvo de Ébano", "dos Guardiões do Véu", "do Sol Negro", "da Rosa de Ferro", "dos Andarilhos do Vento", "do Crepúsculo de Jade"]
+            ],
+            "Fantasia (Objetos)": [
+              ["Espada", "Amuleto", "Orbe", "Cajado", "Elixir", "Tomo", "Anel", "Coroa", "Gema", "Runa", "Manto", "Adaga", "Machado", "Arco", "Escudo", "Poção", "Grimório", "Pingente"],
+              ["da Perdição", "de Gelo", "do Dragão", "da Luz Estelar", "dos Antigos", "da Alma", "Sussurrante", "de Ébano", "da Verdade", "do Esquecimento", "da Profecia", "de Sangue", "do Sol", "da Lua", "de Mithril", "da Escuridão", "Sagrado", "Profano"]
+            ],
+            "Ficção Científica": [
+              ["Zane", "Cora", "Jax", "Kaelen", "Roric", "Nyx", "Alita", "Bex", "Crix", "Darian", "Echo", "Flint", "Gideon", "Helix", "Icarus", "Jyn", "Kael", "Lyra", "Morpheus", "Nash", "Orion", "Pax", "Quorra", "Riven", "Silas", "Tarkin", "Uriah", "Vex", "Wren", "Xylo", "Yara", "Zeke", "Kaelus", "Rogue", "Cypher", "Jett", "Raze", "Spike", "Deckard", "Korben", "Leeloo", "Ripley", "Sloan", "Axel", "Blaze", "Cassian", "Daxon", "Ezra", "Fenix", "Gage", "Hux", "Jagger", "Kix", "Lennox", "Maverick", "Nero", "Onyx", "Pike", "Ronan", "Stellan", "Tycho", "Vanguard", "Zorion", "Unit", "Protocol", "Subject", "Alpha", "Omega", "Asimov", "Bradbury", "Clarke", "Decker", "Ender", "Garrus", "Hawke", "Javik", "Kain", "Liara", "Mordin", "Neo", "Ordis", "Proximo", "Rex", "Shepard", "Tali", "Urdnot", "Vetra", "Wrex", "Yor"],
+              ["Stellar", "Cygnus", "Orion", "Vex", "Vector", "Core", "Xylos", "Mechan", "Andromeda", "Blackburn", "Cortex", "Dynamo", "Exon", "Fusion", "Galileo", "Helios", "lon", "Joule", "Kessler", "Lithium", "Maximus", "Nova", "Photon", "Quasar", "Raptor", "Stryker", "Titan", "Uplink", "Volkov", "Welkin", "Xenon", "Yutani", "Zetacorp", "Krylov", "Axiom", "Nexus", "-734", "-9", "-B", "Stardust", "da Nebulosa", "do Setor Gamma", "Piloto de Caça", "Engenheiro de Bordo", "Navegador Estelar", "Corsário do Vazio", "Cromado", "Sintético", "Aumentado", "o Renegado", "da Colônia Titã", "da Frota Estelar", "Androide", "Classe-D", "o Contrabandista", "de Cyberia", "da Zona Proibida", "o Mutante", "da Corporação Omni", "da Aliança", "o Nômade", "o Pioneiro", "o Sobrevivente", "do Sistema Kepler", "o Pacificador", "o Executor", "o Tecnocrata", "o Bio-Aprimorado", "o Explorador"]
+            ]
+          }
+        };
+        const phrasesData = {
+          "action": [
+            {"range": [1, 8], "title": "CONCLUSÃO", "desc": "Se este Ponto de Virada é atualmente um Desenvolvimento, ele se torna uma Conclusão. Encerre a Linha de Enredo."},
+            {"range": [9, 24], "title": "NENHUM", "desc": "Nenhuma ação significativa ocorre. Role novamente se precisar de mais pontos."},
+            {"range": [25, 26], "title": "ATAQUE NÃO LETAL", "desc": "Um Personagem é atacado, mas o agressor não tem a intenção de matar."},
+            {"range": [27, 27], "title": "DANO COLATERAL", "desc": "A atividade atual transborda e afeta o ambiente ou pessoas ao redor."},
+            {"range": [28, 29], "title": "ATAQUE LETAL", "desc": "Um agressor está tentando matar um Personagem."},
+            {"range": [30, 31], "title": "EMBOSCADA", "desc": "Ação súbita e inesperada contra um ou mais personagens."},
+            {"range": [32, 32], "title": "CATÁSTROFE", "desc": "O pior cenário possível acontece de forma espetacular."},
+            {"range": [33, 33], "title": "IDEIA BRILHANTE", "desc": "Um Personagem tem uma ideia que muda o curso dos eventos."},
+            {"range": [34, 34], "title": "ALGO ESTÁ ESCAPANDO", "desc": "Há um limite de tempo para impedir que algo ou alguém escape."},
+            {"range": [35, 36], "title": "PERSEGUIDO", "desc": "Um Personagem está sendo caçado por uma força não oficial (caçador de recompensas, monstro, etc.)."},
+            {"range": [37, 37], "title": "DISTRAÇÃO", "desc": "Um Personagem é distraído em um momento crucial, impactando os eventos."},
+            {"range": [38, 39], "title": "TENTATIVA DE ABDUÇÃO", "desc": "Um agressor tenta sequestrar um Personagem."},
+            {"range": [40, 40], "title": "ALGO EXÓTICO", "desc": "Os eventos envolvem um elemento muito incomum ou bizarro."},
+            {"range": [41, 42], "title": "IMEDIATAMENTE", "desc": "Ação imediata é necessária, não há tempo para planejar."},
+            {"range": [43, 44], "title": "PERSEGUIÇÃO", "desc": "Este Ponto de Virada envolve uma perseguição, onde um Personagem está caçando outro."},
+            {"range": [45, 46], "title": "ESCAPE", "desc": "Um Personagem consegue escapar de uma situação de cativeiro ou perigo."},
+            {"range": [47, 48], "title": "FORTALEZA VIGIADA", "desc": "A ação envolve infiltrar-se em um local perigosamente bem guardado."},
+            {"range": [49, 50], "title": "RESGATE", "desc": "Um Personagem precisa ser resgatado."},
+            {"range": [51, 52], "title": "CONCURSO FÍSICO", "desc": "Personagens se enfrentam em um concurso de habilidade física (luta, esporte, etc.)."},
+            {"range": [53, 54], "title": "BATALHA EM MASSA", "desc": "Um combate entre muitos combatentes de dois ou mais lados."},
+            {"range": [55, 55], "title": "FALHA DE SISTEMA CRÍTICO", "desc": "Um sistema crucial (suporte de vida, freios de um carro) começa a falhar."},
+            {"range": [56, 57], "title": "VITÓRIA!", "desc": "Um Personagem alcança uma vitória clara sobre outro."},
+            {"range": [58, 59], "title": "ARRISCANDO", "desc": "Um Personagem age de maneira muito arriscada, sem se preocupar com as consequências."},
+            {"range": [60, 61], "title": "ÚNICO SOBREVIVENTE", "desc": "Um processo de eliminação (batalha, desastre) deixa apenas um sobrevivente."},
+            {"range": [62, 63], "title": "PARE ISSO", "desc": "Um Personagem age para impedir que algo aconteça."},
+            {"range": [64, 65], "title": "DEFENDER OU NÃO", "desc": "Um terceiro personagem observa um confronto e deve decidir se intervém."},
+            {"range": [66, 67], "title": "COLISÃO", "desc": "Um veículo transportando um Personagem colide ou está prestes a colidir."},
+            {"range": [68, 69], "title": "BARREIRA FÍSICA", "desc": "Uma barreira física (penhasco, porta trancada) deve ser superada com força."},
+            {"range": [70, 71], "title": "INTENSIFICAÇÃO", "desc": "A situação atual escala e se torna muito pior."},
+            {"range": [72, 73], "title": "FURTO", "desc": "A ação envolve um roubo, seja tentado ou bem-sucedido."},
+            {"range": [74, 75], "title": "LIDANDO COM CALAMIDADE", "desc": "Um Personagem precisa lutar contra um desastre em andamento (incêndio, desmoronamento)."},
+            {"range": [76, 77], "title": "CESSAÇÃO SÚBITA", "desc": "A atividade atual para de repente, sem explicação óbvia."},
+            {"range": [78, 78], "title": "USADO CONTRA ELES", "desc": "Um recurso ou característica de um Personagem é usado contra ele."},
+            {"range": [79, 79], "title": "CENÁRIO DE VIAGEM", "desc": "O Ponto de Virada ocorre em um veículo em movimento (navio, trem, nave)."},
+            {"range": [80, 81], "title": "ATIVIDADE FRENÉTICA", "desc": "Uma sucessão rápida de ações ou perigos que exigem reação imediata."},
+            {"range": [82, 83], "title": "BARREIRA DISCRETA", "desc": "Uma barreira precisa ser superada com furtividade ou destreza."},
+            {"range": [84, 85], "title": "UM MOMENTO DE PAZ", "desc": "Uma pausa na ação permite que os Personagens relaxem brevemente."},
+            {"range": [86, 87], "title": "CHEGUEI ANTES", "desc": "Ao chegar a um local, descobre-se que outra pessoa já esteve lá e agiu."},
+            {"range": [88, 89], "title": "CONFRONTO", "desc": "Um encontro tenso que pode escalar para a violência."},
+            {"range": [90, 91], "title": "PROTETOR", "desc": "Um Personagem deve proteger ativamente alguém ou algo de uma ameaça."},
+            {"range": [92, 93], "title": "CRESCENDO", "desc": "Uma série de eventos anteriores culmina neste Ponto de Virada."},
+            {"range": [94, 95], "title": "DESTRUIR A COISA", "desc": "Um Personagem deve destruir um objeto específico."},
+            {"range": [96, 100], "title": "META", "desc": "Algo que altera as regras do jogo. Role na tabela META."}
+          ],
+          "tension": [
+            {"range": [1, 8], "title": "CONCLUSÃO", "desc": "Se este Ponto de Virada é atualmente um Desenvolvimento, ele se torna uma Conclusão. Encerre a Linha de Enredo."},
+            {"range": [9, 24], "title": "NENHUM", "desc": "Nenhuma ação significativa ocorre. Role novamente se precisar de mais pontos."},
+            {"range": [25, 26], "title": "NO DESCONHECIDO", "desc": "Personagens entram em uma situação com fatores desconhecidos, e a única forma de saber é se comprometendo."},
+            {"range": [27, 27], "title": "RECURSO ESGOTADO", "desc": "Um recurso necessário (munição, comida, energia) acaba."},
+            {"range": [28, 28], "title": "DESTINO IMINENTE", "desc": "Algo terrível está se aproximando e é inevitável."},
+            {"range": [29, 29], "title": "CRIME SEM MOTIVO", "desc": "Um crime é cometido, mas não há uma razão clara para ele."},
+            {"range": [30, 30], "title": "DANO COLATERAL", "desc": "A atividade atual transborda e afeta o ambiente ou pessoas ao redor."},
+            {"range": [31, 32], "title": "LUGARES SOMBRIOS", "desc": "O Ponto de Virada ocorre em um local perigoso ou de má reputação."},
+            {"range": [33, 33], "title": "FAÇA ISSO, OU...", "desc": "Um Personagem é coagido a realizar uma tarefa sob ameaça."},
+            {"range": [34, 34], "title": "LOCAL REMOTO", "desc": "O Ponto de Virada ocorre em um local isolado e de difícil acesso."},
+            {"range": [35, 35], "title": "CATÁSTROFE", "desc": "O pior cenário possível acontece de forma espetacular."},
+            {"range": [36, 36], "title": "TOM HORRIPILANTE", "desc": "O que quer que esteja acontecendo tem um tom sombrio, que provoca horror ou nojo."},
+            {"range": [37, 37], "title": "ALGO ESTÁ ESCAPANDO", "desc": "Há um limite de tempo para impedir que algo ou alguém escape."},
+            {"range": [38, 39], "title": "RETALIAÇÃO", "desc": "Os eventos envolvem um elemento de vingança ou retaliação."},
+            {"range": [40, 40], "title": "PERSONAGEM DESAPARECE", "desc": "Um Personagem some misteriosamente."},
+            {"range": [41, 41], "title": "PERSEGUIDO", "desc": "Um Personagem está sendo caçado por uma força não oficial (caçador de recompensas, monstro, etc.)."},
+            {"range": [42, 42], "title": "DECISÃO RUIM", "desc": "Uma decisão anterior de um Personagem se revela ter sido um erro terrível."},
+            {"range": [43, 43], "title": "PROCURADO PELA LEI", "desc": "Um Personagem é oficialmente procurado por um crime."},
+            {"range": [44, 44], "title": "ALGO EXÓTICO", "desc": "Os eventos envolvem um elemento muito incomum ou bizarro."},
+            {"range": [45, 45], "title": "IMEDIATAMENTE", "desc": "Ação imediata é necessária, não há tempo para planejar."},
+            {"range": [46, 46], "title": "TRAIÇÃO!", "desc": "Um Personagem, que era considerado um aliado, se volta contra outro."},
+            {"range": [47, 47], "title": "PERSONAGEM INCAPACITADO", "desc": "Um Personagem é deixado fora de combate por algum motivo."},
+            {"range": [48, 48], "title": "SEM ESCAPE", "desc": "Um Personagem enfrenta um perigo sem meios de escapar."},
+            {"range": [49, 50], "title": "À NOITE", "desc": "O Ponto de Virada acontece à noite."},
+            {"range": [51, 51], "title": "ARMA SECRETA", "desc": "A revelação de uma arma secreta (ou habilidade) muda o equilíbrio de poder."},
+            {"range": [52, 52], "title": "FORTALEZA VIGIADA", "desc": "A ação envolve infiltrar-se em um local perigosamente bem guardado."},
+            {"range": [53, 53], "title": "MORTO", "desc": "Um Personagem está morto."},
+            {"range": [54, 54], "title": "SUSPEITA", "desc": "Um Personagem começa a desconfiar de outro."},
+            {"range": [55, 55], "title": "ESCOLHA IMPOSSÍVEL", "desc": "Um Personagem precisa fazer uma escolha onde todas as opções são ruins."},
+            {"range": [56, 56], "title": "À MOSTRA", "desc": "O que quer que esteja acontecendo, está à vista de todos."},
+            {"range": [57, 58], "title": "PERSONAGEM DIMINUÍDO", "desc": "Um Personagem é enfraquecido ou perde uma habilidade importante."},
+            {"range": [59, 59], "title": "INIMIGOS", "desc": "Inimigos de um Personagem desempenham um papel central nos eventos."},
+            {"range": [60, 60], "title": "TOM AMEAÇADOR", "desc": "A cena é carregada com um tom de ameaça ou perigo iminente."},
+            {"range": [61, 61], "title": "FALHA DE SISTEMA CRÍTICO", "desc": "Um sistema crucial (suporte de vida, freios de um carro) começa a falhar."},
+            {"range": [62, 62], "title": "VITÓRIA!", "desc": "Um Personagem alcança uma vitória clara sobre outro."},
+            {"range": [63, 63], "title": "ARRISCANDO", "desc": "Um Personagem age de maneira muito arriscada, sem se preocupar com as consequências."},
+            {"range": [64, 64], "title": "ÚNICO SOBREVIVENTE", "desc": "Um processo de eliminação (batalha, desastre) deixa apenas um sobrevivente."},
+            {"range": [65, 66], "title": "PROBLEMA RETORNA", "desc": "Um problema que se pensava resolvido retorna, talvez pior do que antes."},
+            {"range": [67, 68], "title": "PRESO", "desc": "Um Personagem está preso e incapaz de agir enquanto os eventos se desenrolam."},
+            {"range": [69, 70], "title": "DESARMADO", "desc": "Um Personagem perde seu principal método de defesa ou ataque."},
+            {"range": [71, 71], "title": "CATÁSTROFE SILENCIOSA", "desc": "O pior acontece, mas de forma sutil e sem alarde."},
+            {"range": [72, 72], "title": "IMPASSE", "desc": "Dois ou mais lados estão em um confronto tenso onde nenhum pode avançar ou recuar facilmente."},
+            {"range": [73, 73], "title": "AMEAÇA OCULTA", "desc": "Uma ameaça que estava presente, mas não percebida, é revelada."},
+            {"range": [74, 75], "title": "NECESSIDADE DE SE ESCONDER", "desc": "Um Personagem precisa se esconder de algo ou alguém."},
+            {"range": [76, 77], "title": "SEGUIDO", "desc": "Um Personagem está sendo seguido."},
+            {"range": [78, 79], "title": "É UMA ARMADILHA!", "desc": "Os Personagens caem em uma armadilha, seja física, social ou emocional."},
+            {"range": [80, 81], "title": "LIMITE DE TEMPO", "desc": "Uma tarefa deve ser cumprida dentro de um prazo ou haverá consequências graves."},
+            {"range": [82, 83], "title": "RECURSO SE ESGOTANDO", "desc": "Um recurso crucial está acabando, criando tensão."},
+            {"range": [84, 85], "title": "NOTÍCIA RUIM", "desc": "Informação sobre um evento negativo que aconteceu remotamente chega aos Personagens."},
+            {"range": [86, 86], "title": "FORTIFICAR", "desc": "Um local precisa ser defendido e fortificado contra um ataque iminente."},
+            {"range": [87, 88], "title": "ABANDONADO", "desc": "Algo ou alguém precisa ser deixado para trás, ou os Personagens encontram um local abandonado."},
+            {"range": [89, 89], "title": "USADO CONTRA ELES", "desc": "Um recurso ou característica de um Personagem é usado contra ele."},
+            {"range": [90, 91], "title": "TOM SINISTRO", "desc": "A cena tem um tom sinistro, pressagiando algo terrível."},
+            {"range": [92, 92], "title": "CENÁRIO DE VIAGEM", "desc": "O Ponto de Virada ocorre em um veículo em movimento (navio, trem, nave)."},
+            {"range": [93, 93], "title": "NOVO INIMIGO", "desc": "Uma nova ameaça, não necessariamente relacionada ao enredo principal, aparece."},
+            {"range": [94, 94], "title": "CENÁRIO RURAL", "desc": "O Ponto de Virada ocorre em um cenário rural, como o campo ou uma fazenda."},
+            {"range": [95, 95], "title": "VULNERABILIDADE EXPLORADA", "desc": "Uma fraqueza (física, emocional, estratégica) de um Personagem é explorada por outro."},
+            {"range": [96, 100], "title": "META", "desc": "Algo que altera as regras do jogo. Role na tabela META."}
+          ],
+          "mystery": [
+            {"range": [1, 8], "title": "CONCLUSÃO", "desc": "Se este Ponto de Virada é atualmente um Desenvolvimento, ele se torna uma Conclusão. Encerre a Linha de Enredo."},
+            {"range": [9, 24], "title": "NENHUM", "desc": "Nenhuma ação significativa ocorre. Role novamente se precisar de mais pontos."},
+            {"range": [25, 26], "title": "NO DESCONHECIDO", "desc": "Personagens entram em uma situação com fatores desconhecidos, e a única forma de saber é se comprometendo."},
+            {"range": [27, 28], "title": "INFORMAÇÃO DE FONTE ANÔNIMA", "desc": "Uma informação útil é recebida de uma fonte desconhecida."},
+            {"range": [29, 30], "title": "CRIME SEM MOTIVO", "desc": "Um crime é cometido, mas não há uma razão clara para ele."},
+            {"range": [31, 32], "title": "PERSONAGEM DESAPARECE", "desc": "Um Personagem some misteriosamente."},
+            {"range": [33, 33], "title": "NÃO ESTÁ FUNCIONANDO", "desc": "Algo que deveria funcionar (um plano, um equipamento) falha inesperadamente."},
+            {"range": [34, 35], "title": "RECURSO DESAPARECE", "desc": "Um objeto ou recurso importante é roubado por um ladrão desconhecido."},
+            {"range": [36, 36], "title": "ENCONTRO FORTUITO", "desc": "Um personagem encontra algo ou alguém extremamente útil por puro acaso."},
+            {"range": [37, 37], "title": "TUDO É REVELADO!", "desc": "Uma fonte fornece uma grande quantidade de detalhes sobre um mistério."},
+            {"range": [38, 39], "title": "INFORMAÇÃO DE FONTE CONHECIDA", "desc": "Informação útil é adquirida de uma fonte conhecida e confiável."},
+            {"range": [40, 40], "title": "INFORMAÇÃO CRÍPTICA", "desc": "Uma informação é recebida, mas seu significado não está claro."},
+            {"range": [41, 42], "title": "MENTIRA DESCOBERTA", "desc": "Descobre-se que uma informação ou afirmação anterior era falsa."},
+            {"range": [43, 43], "title": "ALGO EXÓTICO", "desc": "Os eventos envolvem um elemento muito incomum ou bizarro."},
+            {"range": [44, 45], "title": "CRIME É COMETIDO", "desc": "Um crime é cometido ou descoberto neste Ponto de Virada."},
+            {"range": [46, 47], "title": "É UM SEGREDO", "desc": "A atividade envolve uma operação secreta ou clandestina."},
+            {"range": [48, 48], "title": "ALGO PERDIDO É ENCONTRADO", "desc": "Um objeto, pessoa ou informação que estava perdida reaparece."},
+            {"range": [49, 49], "title": "O OBSERVADOR", "desc": "Uma cena que se presume privada está sendo secretamente observada."},
+            {"range": [50, 50], "title": "ARMA SECRETA", "desc": "A revelação de uma arma secreta (ou habilidade) muda o equilíbrio de poder."},
+            {"range": [51, 52], "title": "MENTIROSO!", "desc": "Um personagem conta uma mentira deliberada neste Ponto de Virada."},
+            {"range": [53, 53], "title": "FORA DE CARÁTER", "desc": "Um personagem age de uma maneira que contradiz sua personalidade ou objetivos."},
+            {"range": [54, 54], "title": "MORTO", "desc": "Um Personagem está morto."},
+            {"range": [55, 56], "title": "MISTÉRIO RESOLVIDO", "desc": "Uma questão central do mistério é finalmente respondida."},
+            {"range": [57, 57], "title": "INFORMAÇÃO VAZADA", "desc": "Informação secreta chega às mãos erradas."},
+            {"range": [58, 59], "title": "SUSPEITA", "desc": "Um Personagem começa a desconfiar de outro."},
+            {"range": [60, 61], "title": "EVIDÊNCIA", "desc": "Uma peça de evidência crucial é encontrada."},
+            {"range": [62, 63], "title": "A TRAMA SE COMPLICA", "desc": "Uma pista promissora acaba sendo um beco sem saída."},
+            {"range": [64, 64], "title": "RAZÃO DUVIDOSA", "desc": "Um personagem faz algo que parece inocente, mas o contexto lança dúvidas sobre suas motivações."},
+            {"range": [65, 65], "title": "FALHA DE SISTEMA CRÍTICO", "desc": "Um sistema crucial (suporte de vida, freios de um carro) começa a falhar."},
+            {"range": [66, 67], "title": "INFORMAÇÃO CRÍPTICA (FONTE DESCONHECIDA)", "desc": "Uma informação enigmática é recebida de uma fonte anônima."},
+            {"range": [68, 69], "title": "UM FIO COMUM", "desc": "Eventos que pareciam não relacionados mostram ter uma conexão."},
+            {"range": [70, 70], "title": "NÃO SEU MESTRE", "desc": "Descobre-se que um personagem estava trabalhando para outra pessoa o tempo todo."},
+            {"range": [71, 72], "title": "O SEGREDO DO PODER", "desc": "A fonte secreta do poder de um adversário é descoberta."},
+            {"range": [73, 74], "title": "AGENDA OCULTA", "desc": "Um personagem revela ou é descoberto tendo um motivo que não havia exposto."},
+            {"range": [75, 75], "title": "OBJETO DE USO DESCONHECIDO", "desc": "Um objeto é encontrado, mas seu propósito não é claro."},
+            {"range": [76, 76], "title": "LIMPAR O NOME", "desc": "Um personagem recebe a tarefa de provar a inocência de alguém."},
+            {"range": [77, 77], "title": "INCRIMINADO", "desc": "Um personagem é injustamente incriminado por outro."},
+            {"range": [78, 78], "title": "CRIME IMPROVÁVEL", "desc": "Um crime ocorre de uma maneira que desafia a lógica (ex: sala trancada por dentro)."},
+            {"range": [79, 80], "title": "A MÃO OCULTA", "desc": "Fica claro que os eventos foram intencionalmente causados por uma força desconhecida."},
+            {"range": [81, 82], "title": "ENCONTRE OU SE ARREPENDA", "desc": "É necessário encontrar um objeto ou pessoa para evitar um desastre."},
+            {"range": [83, 83], "title": "CENÁRIO DE VIAGEM", "desc": "O Ponto de Virada ocorre em um veículo em movimento (navio, trem, nave)."},
+            {"range": [84, 84], "title": "UM VELHO ACORDO", "desc": "Um acordo feito no passado volta para assombrar os personagens."},
+            {"range": [85, 85], "title": "NOVA PESSOA MISTERIOSA", "desc": "Um novo personagem entra na história, mas sua identidade ou propósito são desconhecidos."},
+            {"range": [86, 86], "title": "CENÁRIO RURAL", "desc": "O Ponto de Virada ocorre em um cenário rural, como o campo ou uma fazenda."},
+            {"range": [87, 88], "title": "ALGUÉM ONDE NÃO DEVERIA ESTAR", "desc": "Um personagem é visto em um local comprometedor ou inesperado."},
+            {"range": [89, 89], "title": "VULNERABILIDADE EXPLORADA", "desc": "Uma fraqueza (física, emocional, estratégica) de um Personagem é explorada por outro."},
+            {"range": [90, 91], "title": "FRAUDE", "desc": "Descobre-se que um personagem é uma fraude, não sendo quem dizia ser."},
+            {"range": [92, 93], "title": "CHEGUEI ANTES", "desc": "Ao chegar a um local, descobre-se que outra pessoa já esteve lá e agiu."},
+            {"range": [94, 94], "title": "TEORIA DA CONSPIRAÇÃO", "desc": "Um personagem acredita em uma teoria da conspiração que pode ou não ser verdadeira, mas que motiva suas ações."},
+            {"range": [95, 95], "title": "HISTÓRIA OPOSITORA", "desc": "Uma versão alternativa de um evento conhecido é apresentada, lançando dúvidas sobre a verdade."},
+            {"range": [96, 100], "title": "META", "desc": "Algo que altera as regras do jogo. Role na tabela META."}
+          ],
+          "social": [
+            {"range": [1, 8], "title": "CONCLUSÃO", "desc": "Se este Ponto de Virada é atualmente um Desenvolvimento, ele se torna uma Conclusão. Encerre a Linha de Enredo."},
+            {"range": [9, 24], "title": "NENHUM", "desc": "Nenhuma ação significativa ocorre. Role novamente se precisar de mais pontos."},
+            {"range": [25, 26], "title": "EXCLUÍDO", "desc": "Um personagem é tratado como um pária pela sociedade ou por um grupo."},
+            {"range": [27, 28], "title": "VENDIDO!", "desc": "O Ponto de Virada envolve uma transação comercial, a venda de bens ou informações."},
+            {"range": [29, 30], "title": "RETALIAÇÃO", "desc": "Os eventos envolvem um elemento de vingança ou retaliação."},
+            {"range": [31, 31], "title": "REUNIÃO ENERGÉTICA", "desc": "Um encontro social com muita energia, como uma festa ou um evento esportivo."},
+            {"range": [32, 32], "title": "REUNIÃO RARA OU ÚNICA", "desc": "Um encontro social para um propósito específico e raro, como um funeral ou casamento."},
+            {"range": [33, 34], "title": "UMA ORGANIZAÇÃO", "desc": "Uma organização (guilda, corporação, etc.) está formalmente envolvida nos eventos."},
+            {"range": [35, 35], "title": "COMPORTAMENTO INACEITÁVEL", "desc": "Alguém se comporta de maneira socialmente inaceitável, causando problemas."},
+            {"range": [36, 36], "title": "FAMA", "desc": "Os eventos envolvem uma pessoa famosa ou a própria natureza da fama."},
+            {"range": [37, 37], "title": "BODE EXPIATÓRIO", "desc": "Um inocente é culpado para desviar a atenção do verdadeiro culpado."},
+            {"range": [38, 38], "title": "O OBSERVADOR", "desc": "Uma cena que se presume privada está sendo secretamente observada."},
+            {"range": [39, 39], "title": "MENTIROSO!", "desc": "Um personagem conta uma mentira deliberada neste Ponto de Virada."},
+            {"range": [40, 41], "title": "SEDE", "desc": "A cena ocorre na sede principal de um personagem ou organização."},
+            {"range": [42, 43], "title": "ENCONTRO SOCIAL COMUM", "desc": "Um encontro social mundano, como um jantar ou uma ida ao shopping."},
+            {"range": [44, 45], "title": "CENÁRIO URBANO LEVE", "desc": "A cena ocorre em uma cidade pequena ou vila."},
+            {"range": [46, 47], "title": "ENCONTRO DE TRABALHO", "desc": "Um encontro social que envolve colegas de trabalho ou profissionais."},
+            {"range": [48, 48], "title": "SUSPEITA", "desc": "Um Personagem começa a desconfiar de outro."},
+            {"range": [49, 49], "title": "INIMIGOS", "desc": "Inimigos de um Personagem desempenham um papel central nos eventos."},
+            {"range": [50, 51], "title": "CENÁRIO URBANO DENSO", "desc": "A cena ocorre em uma grande cidade."},
+            {"range": [52, 53], "title": "GRUPO EM PERIGO", "desc": "Uma comunidade ou grupo está enfrentando uma dificuldade séria."},
+            {"range": [54, 54], "title": "RESPOSTA SIMBÓLICA", "desc": "Uma autoridade faz o mínimo necessário para resolver um problema, sem um esforço real."},
+            {"range": [55, 55], "title": "NÃO SEU MESTRE", "desc": "Descobre-se que um personagem estava trabalhando para outra pessoa o tempo todo."},
+            {"range": [56, 57], "title": "LOCAL PÚBLICO", "desc": "A cena ocorre em um local público e movimentado."},
+            {"range": [58, 59], "title": "O LÍDER", "desc": "O líder de uma organização ou comunidade está envolvido."},
+            {"range": [60, 61], "title": "SALVADOR", "desc": "Um personagem se oferece para salvar o dia, talvez com motivos ocultos."},
+            {"range": [62, 63], "title": "REFORÇOS", "desc": "Ajuda inesperada chega em um momento crucial."},
+            {"range": [64, 65], "title": "GOVERNO", "desc": "A burocracia ou o governo de alguma forma se envolvem nos eventos."},
+            {"range": [66, 67], "title": "INJUSTIÇA", "desc": "Um ato claro de injustiça social ou legal ocorre."},
+            {"range": [68, 69], "title": "CELEBRAÇÃO", "desc": "O Ponto de Virada envolve uma celebração, como uma festa ou festival."},
+            {"range": [70, 70], "title": "IMPASSE", "desc": "Dois ou mais lados estão em um confronto tenso onde nenhum pode avançar ou recuar facilmente."},
+            {"range": [71, 71], "title": "RELIGIÃO", "desc": "A religião ou crenças religiosas desempenham um papel central."},
+            {"range": [72, 72], "title": "INOCÊNCIA", "desc": "Um elemento de inocência (geralmente uma pessoa) é colocado em uma situação perigosa."},
+            {"range": [73, 74], "title": "PREPARAÇÃO", "desc": "Os personagens precisam se preparar para um evento futuro."},
+            {"range": [75, 75], "title": "ENCONTRO DE MENTES", "desc": "Dois personagens se reúnem para uma discussão importante."},
+            {"range": [76, 76], "title": "ORGANIZAÇÕES EM CONFLITO", "desc": "Duas ou mais organizações estão em desacordo."},
+            {"range": [77, 77], "title": "PESSOA PODEROSA", "desc": "Uma pessoa com grande poder ou influência está envolvida."},
+            {"range": [78, 78], "title": "CENÁRIO DE VIAGEM", "desc": "O Ponto de Virada ocorre em um veículo em movimento (navio, trem, nave)."},
+            {"range": [79, 79], "title": "MISSÃO DE ESCOLTA", "desc": "Um personagem deve escoltar outro a algum lugar."},
+            {"range": [80, 80], "title": "UM VELHO ACORDO", "desc": "Um acordo feito no passado volta para assombrar os personagens."},
+            {"range": [81, 82], "title": "ALIANÇA", "desc": "Dois grupos ou personagens formam uma aliança."},
+            {"range": [83, 84], "title": "PODER SOBRE OS OUTROS", "desc": "Um personagem exerce poder e controle sobre outros."},
+            {"range": [85, 85], "title": "CENÁRIO RURAL", "desc": "O Ponto de Virada ocorre em um cenário rural, como o campo ou uma fazenda."},
+            {"range": [86, 87], "title": "CORRUPÇÃO", "desc": "A corrupção em um sistema ou organização é revelada."},
+            {"range": [88, 89], "title": "É NEGÓCIO", "desc": "O Ponto de Virada envolve negócios, comércio ou uma transação comercial."},
+            {"range": [90, 90], "title": "CAUSA JUSTA DESVIADA", "desc": "Algo que começou como uma causa nobre se transformou em algo ruim."},
+            {"range": [91, 91], "title": "CONFRONTO", "desc": "Um encontro tenso que pode escalar para a violência."},
+            {"range": [92, 93], "title": "DISCUSSÃO", "desc": "Uma discordância entre dois personagens leva a um conflito."},
+            {"range": [94, 94], "title": "TENSÃO SOCIAL", "desc": "A tensão social em uma comunidade está prestes a explodir."},
+            {"range": [95, 95], "title": "SERVIÇO", "desc": "O Ponto de Virada envolve um servo ou representante de outro personagem."},
+            {"range": [96, 100], "title": "META", "desc": "Algo que altera as regras do jogo. Role na tabela META."}
+          ],
+          "personal": [
+            {"range": [1, 8], "title": "CONCLUSÃO", "desc": "Se este Ponto de Virada é atualmente um Desenvolvimento, ele se torna uma Conclusão. Encerre a Linha de Enredo."},
+            {"range": [9, 24], "title": "NENHUM", "desc": "Nenhuma ação significativa ocorre. Role novamente se precisar de mais pontos."},
+            {"range": [25, 26], "title": "PERSUASÃO", "desc": "Um personagem tenta persuadir outro a fazer algo."},
+            {"range": [27, 27], "title": "FAÇA ISSO, OU...", "desc": "Um Personagem é coagido a realizar uma tarefa sob ameaça."},
+            {"range": [28, 28], "title": "RETALIAÇÃO", "desc": "Os eventos envolvem um elemento de vingança ou retaliação."},
+            {"range": [29, 29], "title": "DECISÃO RUIM", "desc": "Uma decisão passada de um personagem se revela ter sido um erro grave."},
+            {"range": [30, 31], "title": "MAU SENTIMENTO", "desc": "Um personagem nutre um profundo ressentimento por outro."},
+            {"range": [32, 33], "title": "PROCURADO PELA LEI", "desc": "Um Personagem é oficialmente procurado por um crime."},
+            {"range": [34, 35], "title": "É SEU DEVER", "desc": "Um personagem é encarregado de cumprir um dever, quer queira ou não."},
+            {"range": [36, 37], "title": "CONEXÃO ROMPIDA", "desc": "O laço entre dois personagens é quebrado."},
+            {"range": [38, 38], "title": "HUMILHAÇÃO", "desc": "Um personagem é publicamente humilhado."},
+            {"range": [39, 40], "title": "TRAIÇÃO!", "desc": "Um Personagem, que era considerado um aliado, se volta contra outro."},
+            {"range": [41, 42], "title": "PERSONAGEM INCAPACITADO", "desc": "Um Personagem é deixado fora de combate por algum motivo."},
+            {"range": [43, 43], "title": "O OBSERVADOR", "desc": "Uma cena que se presume privada está sendo secretamente observada."},
+            {"range": [44, 45], "title": "LAR, DOCE LAR", "desc": "A cena acontece na casa de um personagem."},
+            {"range": [46, 46], "title": "SEDE", "desc": "A cena ocorre na sede principal de um personagem ou organização."},
+            {"range": [47, 48], "title": "ASSUNTOS FAMILIARES", "desc": "Um membro da família de um personagem está envolvido."},
+            {"range": [49, 49], "title": "FIGURA DO PASSADO", "desc": "Alguém do passado de um personagem retorna."},
+            {"range": [50, 51], "title": "PERSONAGEM DIMINUÍDO", "desc": "Um Personagem é enfraquecido ou perde uma habilidade importante."},
+            {"range": [52, 53], "title": "INIMIGOS", "desc": "Inimigos de um Personagem desempenham um papel central nos eventos."},
+            {"range": [54, 54], "title": "FAZENDO A COISA CERTA", "desc": "Um personagem com má índole tem uma mudança de coração."},
+            {"range": [55, 56], "title": "À SUA MERCÊ", "desc": "Um personagem está indefeso e deve confiar na misericórdia de outro."},
+            {"range": [57, 58], "title": "QUEDA DO PODER", "desc": "Um personagem perde sua posição de poder."},
+            {"range": [59, 60], "title": "AJUDA, POR UM PREÇO", "desc": "Alguém oferece ajuda, mas exige algo significativo em troca."},
+            {"range": [61, 62], "title": "POSSESSÃO PRECIOSA", "desc": "O Ponto de Virada envolve uma posse muito importante de um personagem."},
+            {"range": [63, 63], "title": "DESARMADO", "desc": "Um Personagem perde seu principal método de defesa ou ataque."},
+            {"range": [64, 65], "title": "É TUDO SOBRE VOCÊ", "desc": "A ação principal está focada em um único personagem."},
+            {"range": [66, 67], "title": "NOVA CONEXÃO", "desc": "Um personagem forma uma nova e importante conexão com outro."},
+            {"range": [68, 68], "title": "INOCÊNCIA", "desc": "Um elemento de inocência (geralmente uma pessoa) é colocado em uma situação perigosa."},
+            {"range": [69, 70], "title": "DISPOSTO A FALAR", "desc": "Um personagem está pronto para conversar e revelar informações importantes."},
+            {"range": [71, 72], "title": "DANO PESSOAL", "desc": "Um personagem fere outro de uma forma pessoal, não física."},
+            {"range": [73, 73], "title": "INCRIMINADO", "desc": "Um personagem é injustamente incriminado por outro."},
+            {"range": [74, 75], "title": "PREPARAÇÃO", "desc": "Os personagens precisam se preparar para um evento futuro."},
+            {"range": [76, 76], "title": "FOCO NO AMIGO", "desc": "A ação principal está focada em um amigo próximo de um personagem."},
+            {"range": [77, 77], "title": "INTOCÁVEL", "desc": "Um personagem é, de alguma forma, intocável, forçando abordagens indiretas."},
+            {"range": [78, 78], "title": "SUBORNO", "desc": "Um personagem recebe uma oferta de suborno."},
+            {"range": [79, 80], "title": "ASSISTÊNCIA", "desc": "Um personagem ajuda outro de forma significativa."},
+            {"range": [81, 82], "title": "PEDINDO AJUDA", "desc": "Um personagem se aproxima de outro para pedir ajuda."},
+            {"range": [83, 83], "title": "BEM-VINDO AO ENREDO", "desc": "Um personagem descobre que está pessoalmente conectado ao enredo."},
+            {"range": [84, 84], "title": "SIMPATIA", "desc": "Um personagem gera uma forte simpatia, motivando as ações de outros."},
+            {"range": [85, 86], "title": "PROMESSA DE RECOMPENSA", "desc": "Uma recompensa substancial é oferecida por uma tarefa legítima."},
+            {"range": [87, 87], "title": "CONHECIMENTO ESPECIALIZADO", "desc": "O conhecimento ou habilidade única de um personagem se torna crucial."},
+            {"range": [88, 89], "title": "FOCO NO MUNDANO", "desc": "O Ponto de Virada envolve um objeto ou cenário comum e mundano."},
+            {"range": [90, 91], "title": "CORRA!", "desc": "Um personagem foge de uma situação ou é descoberto que já fugiu."},
+            {"range": [92, 93], "title": "PROTETOR", "desc": "Um personagem recebe o dever de proteger alguém ou algo."},
+            {"range": [94, 95], "title": "SERVIÇO", "desc": "O Ponto de Virada envolve um servo ou representante de outro personagem."},
+            {"range": [96, 100], "title": "META", "desc": "Algo que altera as regras do jogo. Role na tabela META."}
+          ],
+          "meta": [
+            {"range": [1, 18], "title": "PERSONAGEM SAI DA AVENTURA", "desc": "Um personagem não-jogador é removido da história."},
+            {"range": [19, 27], "title": "PERSONAGEM RETORNA", "desc": "Um personagem que havia saído da história retorna."},
+            {"range": [28, 36], "title": "PERSONAGEM SE DESTACA", "desc": "Um personagem se torna mais importante na trama."},
+            {"range": [37, 55], "title": "PERSONAGEM SE DIMINUI", "desc": "Um personagem se torna menos importante na trama."},
+            {"range": [56, 73], "title": "PERSONAGEM É REBAIXADO", "desc": "Um personagem se torna muito menos importante na trama."},
+            {"range": [74, 82], "title": "PERSONAGEM É PROMOVIDO", "desc": "Um personagem se torna muito mais importante na trama."},
+            {"range": [83, 100], "title": "COMBINAÇÃO DE ENREDOS", "desc": "Este Ponto de Virada envolve mais de um Enredo ao mesmo tempo."}
+          ]
+        };
+    </script>
+
     <!-- === SCRIPT PRINCIPAL === -->
     <script>
-    document.addEventListener('DOMContentLoaded', async () => {
+    document.addEventListener('DOMContentLoaded', () => {
         // --- Definições de Tipo (JSDoc) ---
         /** @typedef {{characters: Character[], plotlines: Plotline[], turning_points: TurningPoint[], theme: 'light'|'dark', history: string}} State */
         /** @typedef {{id: number, name: string, special_trait: string, emoji: string, identities: string[], descriptors: string[], notes: string}} Character */
@@ -239,7 +592,7 @@
         // --- Variáveis Globais e Estado ---
         const loadingOverlay = document.getElementById('loading-overlay');
         const appContainer = document.getElementById('app-container');
-        let plotlinesData, charactersData, phrasesData;
+        // Os dados agora são carregados das tags <script> acima
         let state = { characters: [], plotlines: [], turning_points: [], theme: 'dark', history: '' };
         let activeSelections = { plotlineId: null, tpId: null };
         let diceRollerState = { selectedDie: 20 };
@@ -261,12 +614,6 @@
             constructor(items) { this._original = [...(items || [])]; this._shuffled = []; this._fill(); }
             _fill() { this._shuffled = [...this._original].sort(() => Math.random() - 0.5); }
             next() { if (this._shuffled.length === 0) this._fill(); return this._shuffled.pop(); }
-        }
-
-        async function fetchData(url) {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`Falha ao carregar ${url}: ${response.statusText}`);
-            return await response.json();
         }
         
         const rollDie = (sides) => Math.floor(Math.random() * sides) + 1;
@@ -297,6 +644,31 @@
             const timestamp = new Date().toLocaleTimeString('pt-BR');
             state.history += `[${timestamp}] ${message}\n`;
             renderHistory();
+        };
+
+        // --- [CORREÇÃO 2] FUNÇÃO `initializeShufflers` IMPLEMENTADA ---
+        const initializeShufflers = () => {
+            // Shufflers para Personagens
+            shufflers.characters = {};
+            shufflers.characters.identities = new CycledShuffler(charactersData.identities);
+            shufflers.characters.descriptors = new CycledShuffler(charactersData.descriptors);
+            shufflers.characters.name_parts = {};
+            for (const theme in charactersData.name_parts) {
+                shufflers.characters.name_parts[theme] = [
+                    new CycledShuffler(charactersData.name_parts[theme][0]),
+                    new CycledShuffler(charactersData.name_parts[theme][1])
+                ];
+            }
+
+            // Shufflers para Linhas de Enredo
+            shufflers.plotlines = {};
+            for (const theme in plotlinesData) {
+                shufflers.plotlines[theme] = {
+                    goals: new CycledShuffler(plotlinesData[theme].goals),
+                    subjects: new CycledShuffler(plotlinesData[theme].subjects),
+                    focuses: new CycledShuffler(plotlinesData[theme].focuses)
+                };
+            }
         };
         
         // --- Funções de Renderização ---
@@ -567,7 +939,8 @@
                         const loaded = JSON.parse(ev.target.result);
                         if ('characters' in loaded && 'plotlines' in loaded && 'turning_points' in loaded) {
                             state = loaded;
-                            initializeShufflers();
+                            // Re-inicializar shufflers pode ser necessário se os dados base mudarem,
+                            // mas para carregar um estado salvo, apenas renderizar é suficiente.
                             renderAll();
                             logEvent(`Aventura carregada do arquivo: ${file.name}`);
                             showToast("Aventura carregada!");
@@ -584,8 +957,8 @@
                 document.getElementById('theme-icon-dark').classList.toggle('hidden', isLight);
                 document.getElementById('theme-icon-light').classList.toggle('hidden', !isLight);
             });
-            document.getElementById('modal-close-btn').addEventListener('click', modal.close);
-            modal.backdrop.addEventListener('click', modal.close);
+            document.getElementById('modal-close-btn').addEventListener('click', () => modal.close());
+            modal.backdrop.addEventListener('click', () => modal.close());
             document.getElementById('export-notes-btn').addEventListener('click', () => {
                 const blob = new Blob([state.history], {type: 'text/plain'});
                 const link = document.createElement('a');
@@ -651,33 +1024,29 @@
         }
 
         // --- Inicialização da Aplicação ---
-        const init = async () => {
+        const init = () => {
             try {
-                [plotlinesData, charactersData, phrasesData] = await Promise.all([
-                    fetchData('plotlines.json'),
-                    fetchData('characters.json'),
-                    fetchData('phrases.json')
-                ]);
+                // Os dados já estão carregados das tags <script>
+                const themeSelect = document.getElementById('theme-select');
+                themeSelect.innerHTML = Object.keys(phrasesData)
+                  .map(t => `<option value="${t.toLowerCase()}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('');
+                
+                initializeShufflers();
+                setupEventListeners();
+                renderAll();
+                logEvent("Adventure Crafter iniciado.");
+
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                    appContainer.style.opacity = '1';
+                }, 300);
+
             } catch (error) {
-                console.error(error);
-                loadingOverlay.innerHTML = `<p class="text-red-400 text-lg">Falha ao carregar dados: ${error.message}</p>`;
+                console.error("Erro na inicialização:", error);
+                loadingOverlay.innerHTML = `<p class="text-red-400 text-lg">Falha ao inicializar a aplicação: ${error.message}</p>`;
                 return;
             }
-            
-            const themeSelect = document.getElementById('theme-select');
-            themeSelect.innerHTML = Object.keys(phrasesData)
-              .map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('');
-            
-            initializeShufflers();
-            setupEventListeners();
-            renderAll();
-            logEvent("Adventure Crafter iniciado.");
-
-            loadingOverlay.style.opacity = '0';
-            setTimeout(() => {
-                loadingOverlay.style.display = 'none';
-                appContainer.style.opacity = '1';
-            }, 300);
         };
 
         init();

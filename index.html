@@ -82,7 +82,7 @@
         <header class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-3xl font-title">Adventure Crafter</h1>
-                <p class="text-muted">Web Edition v6.2 - Final</p>
+                <p class="text-muted">Web Edition v6.4 - Final</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button id="save-btn" class="px-3 py-2 text-sm font-medium text-white rounded-md btn-primary">Salvar</button>
@@ -116,7 +116,7 @@
     
     <!-- === MODAL === -->
     <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-70 z-40 hidden"></div>
-    <div id="modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 card w-11/12 md:w-2/3 lg:w-1/2 max-w-2xl rounded-lg shadow-2xl z-50 hidden">
+    <div id="modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 card w-11/12 md:w-2/3 lg:w-1/2 max-w-2xl rounded-lg shadow-2xl z-50 hidden pop-in">
         <div class="relative p-6 md:p-8">
             <button id="modal-close-btn" class="absolute top-4 right-4 text-muted hover:text-main" aria-label="Fechar modal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             <div id="modal-content"></div>
@@ -148,20 +148,25 @@
         }
 
         let plotlinesData, charactersData, phrasesData;
+
         try {
             [plotlinesData, charactersData, phrasesData] = await Promise.all([
-                fetchData('plotlines.json'), fetchData('characters.json'), fetchData('phrases.json')
+                fetchData('plotlines.json'),
+                fetchData('characters.json'),
+                fetchData('phrases.json')
             ]);
         } catch (error) {
+            console.error(error);
             document.getElementById('loading-status').textContent = `Erro: ${error.message}. Verifique o console.`;
-            return;
+            return; // Impede a execução do resto do app se os dados falharem
         }
         
+        // Esconde a tela de carregamento e mostra o app
         loadingOverlay.style.opacity = '0';
         setTimeout(() => {
             loadingOverlay.style.display = 'none';
             appContainer.style.opacity = '1';
-        }, 500);
+        }, 300);
 
         // --- Estado da Aplicação ---
         /** @type {State} */
@@ -262,7 +267,7 @@
             DOM.plotlineList.innerHTML = state.plotlines.length === 0
                 ? `<li class="p-4 text-center text-muted">Nenhum enredo.</li>`
                 : state.plotlines.map(plot => `
-                    <li class="p-3 cursor-pointer border-b border-color last:border-b-0 hover:bg-surface-light transition-colors ${plot.id === activeSelections.plotlineId ? 'selected text-white' : ''}" data-id="${plot.id}">
+                    <li class="p-3 cursor-pointer border-b border-color last:border-b-0 hover:bg-surface-light transition-colors ${plot.id === activeSelections.plotlineId ? 'selected' : ''}" data-id="${plot.id}">
                         ${plot.name}
                     </li>
                 `).join('');
@@ -272,7 +277,7 @@
             DOM.tpList.innerHTML = state.turning_points.length === 0
                 ? `<li class="p-4 text-center text-muted">Nenhum ponto de virada.</li>`
                 : state.turning_points.map(tp => `
-                    <li class="p-3 cursor-pointer border-b border-color last:border-b-0 hover:bg-surface-light transition-colors ${tp.id === activeSelections.tpId ? 'selected text-white' : ''}" data-id="${tp.id}">
+                    <li class="p-3 cursor-pointer border-b border-color last:border-b-0 hover:bg-surface-light transition-colors ${tp.id === activeSelections.tpId ? 'selected' : ''}" data-id="${tp.id}">
                         ${tp.title}
                     </li>
                 `).join('');
@@ -371,22 +376,38 @@
             content: document.getElementById('modal-content'),
             backdrop: document.getElementById('modal-backdrop'),
             container: document.getElementById('modal'),
-            open(html) { this.content.innerHTML = html; this.backdrop.classList.remove('hidden'); this.container.classList.remove('hidden'); },
-            close() { this.container.classList.add('hidden'); this.backdrop.classList.add('hidden'); this.content.innerHTML = ''; }
+            open(html) { this.content.innerHTML = html; this.backdrop.classList.remove('hidden'); this.container.classList.remove('hidden'); this.container.classList.add('pop-in'); },
+            close() { this.container.classList.add('hidden'); this.backdrop.classList.add('hidden'); this.content.innerHTML = ''; this.container.classList.remove('pop-in');}
         };
+
+        function showConfirmationModal(message, onConfirm) {
+            modal.open(`
+                <h2 class="font-title text-xl mb-4 text-center">Confirmação</h2>
+                <p class="text-center text-muted mb-6">${message}</p>
+                <div class="flex justify-center space-x-4">
+                    <button id="confirm-cancel" class="px-6 py-2 rounded-md card-light">Cancelar</button>
+                    <button id="confirm-action" class="px-6 py-2 rounded-md text-white btn-danger">Confirmar</button>
+                </div>
+            `);
+            document.getElementById('confirm-action').onclick = () => {
+                onConfirm();
+                modal.close();
+            };
+            document.getElementById('confirm-cancel').onclick = () => modal.close();
+        }
 
         function showCharacterGenerator() {
             const nameThemes = Object.keys(charactersData.name_parts).map(t => `<option value="${t}">${t}</option>`).join('');
             modal.open(`
                 <h2 class="font-title text-2xl mb-6 text-center">Gerador de Personagem</h2>
-                <div class="space-y-4" id="char-gen-form">
+                <div class="space-y-4" id="char-gen-form" data-generated="{}">
                     <input type="text" id="char-name-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" placeholder="Nome do Personagem">
                     <select id="char-name-theme" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${nameThemes}</select>
                     <button id="generate-char-name-btn" class="w-full py-2 rounded-md text-white font-semibold btn-primary">Gerar Nome</button>
                     <div class="p-4 rounded-md card-light space-y-2">
                         <p><b>Característica:</b> <span id="char-gen-special">...</span></p>
-                        <div class="flex items-center"><b>Identidades:</b> <span id="char-gen-identities" class="ml-2">...</span><button class="reroll-btn ml-auto" data-type="identities">🎲</button></div>
-                        <div class="flex items-center"><b>Descritores:</b> <span id="char-gen-descriptors" class="ml-2">...</span><button class="reroll-btn ml-auto" data-type="descriptors">🎲</button></div>
+                        <div class="flex items-center"><b>Identidades:</b> <span id="char-gen-identities" class="ml-2">...</span><button class="reroll-btn ml-auto text-lg" data-type="identities">🎲</button></div>
+                        <div class="flex items-center"><b>Descritores:</b> <span id="char-gen-descriptors" class="ml-2">...</span><button class="reroll-btn ml-auto text-lg" data-type="descriptors">🎲</button></div>
                     </div>
                     <button id="generate-char-attrs-btn" class="w-full py-2 rounded-md text-white font-semibold btn-accent">Gerar Atributos</button>
                 </div>
@@ -431,9 +452,9 @@
                 let roll = rollDie(100);
                 let originalRoll = roll;
                 let originalTheme = theme;
-                let phraseData = getPhraseByRoll(phrasesData[theme], roll);
+                let phraseData = getPhraseByRoll(phrasesData[theme.toLowerCase()], roll);
                 
-                let finalTheme = theme;
+                let finalTheme = theme.toLowerCase();
                 let metaInfo = "";
 
                 if (phraseData && phraseData.title === "META") {
@@ -450,7 +471,7 @@
                     
                     resultDisplay.style.backgroundColor = THEME_COLORS[finalTheme] || THEME_COLORS.default;
                     
-                    resultContent.innerHTML = `<h3 id="result-title" class="text-2xl font-title mb-2">${THEME_EMOJIS[finalTheme] || ''} ${phraseData.title}</h3><p id="result-explanation" class="text-muted">${phraseData.desc}</p>`;
+                    resultContent.innerHTML = `<h3 id="result-title" class="text-2xl font-title mb-2 pop-in">${THEME_EMOJIS[finalTheme] || ''} ${phraseData.title}</h3><p id="result-explanation" class="text-muted pop-in" style="animation-delay: 0.1s;">${phraseData.desc}</p>`;
                 } else {
                     document.getElementById('result-title').textContent = "Erro";
                     document.getElementById('result-explanation').textContent = `Nenhum resultado encontrado para o tema '${theme}' com a rolagem ${roll}.`;
@@ -504,8 +525,8 @@
                             tp.title = tpEditor.querySelector('#tp-title-input').value;
                             tp.plotlineId = parseInt(tpEditor.querySelector('#tp-plotline-select').value) || null;
                             tp.status = tpEditor.querySelector('input[name="tp-status"]:checked').value;
-                            tp.plot_points = Array.from(tpEditor.querySelectorAll('.tp-plot-point-input')).map(i => i.value);
-                            tp.invoked_characters = Array.from(tpEditor.querySelectorAll('.tp-char-input')).map(i => i.value);
+                            tp.plot_points = Array.from(tpEditor.querySelectorAll('.tp-plot-point-input')).map(i => i.value).filter(Boolean);
+                            tp.invoked_characters = Array.from(tpEditor.querySelectorAll('.tp-char-input')).map(i => i.value).filter(Boolean);
                             tp.notes = tpEditor.querySelector('#tp-notes-input').value;
                             logEvent(`Ponto de Virada "${tp.title}" salvo.`);
                             renderTurningPoints();
@@ -520,8 +541,9 @@
                     }
                 }
                 if (e.target.matches('.delete-btn[data-type="character"]')) {
-                    const charName = state.characters.find(c => c.id === parseInt(e.target.dataset.id))?.name;
-                    state.characters = state.characters.filter(c => c.id !== parseInt(e.target.dataset.id));
+                    const charId = parseInt(e.target.dataset.id);
+                    const charName = state.characters.find(c => c.id === charId)?.name;
+                    state.characters = state.characters.filter(c => c.id !== charId);
                     logEvent(`Personagem "${charName}" removido.`);
                     renderCharacters();
                 }
@@ -543,14 +565,17 @@
             document.getElementById('modal').addEventListener('click', (e) => {
                 const form = document.getElementById('char-gen-form');
                 if (e.target.matches('.cancel-modal-btn')) modal.close();
-                if (e.target.matches('#generate-char-attrs-btn') || e.target.matches('.reroll-btn')) {
+                if (form && (e.target.matches('#generate-char-attrs-btn') || e.target.matches('.reroll-btn'))) {
                     const isReroll = e.target.matches('.reroll-btn');
                     const data = JSON.parse(form.dataset.generated || '{}');
+                    
                     if (!isReroll || !data.special_trait) {
-                        const [special_trait, emoji] = getPhraseByRoll(charactersData.special_characteristics, rollDie(100));
-                        data.special_trait = special_trait;
-                        data.emoji = emoji;
-                        document.getElementById('char-gen-special').textContent = `${special_trait} ${emoji}`;
+                        const characteristic = getPhraseByRoll(charactersData.special_characteristics, rollDie(100));
+                        if(characteristic){
+                            data.special_trait = characteristic.value[0];
+                            data.emoji = characteristic.value[1];
+                            document.getElementById('char-gen-special').textContent = `${data.special_trait} ${data.emoji}`;
+                        }
                     }
                     if (!isReroll || e.target.dataset.type === 'identities') {
                         const num = rollDie(100) <= 33 ? 2 : 1;
@@ -651,18 +676,22 @@
                 URL.revokeObjectURL(link.href);
             });
             document.getElementById('clear-notes-btn').addEventListener('click', () => {
-                if(confirm("Tem certeza que deseja limpar todo o registro de anotações?")) {
+                showConfirmationModal("Tem certeza que deseja limpar todo o registro de anotações?", () => {
                     state.history = "";
                     renderHistory();
                     logEvent("Registro de anotações limpo.");
-                }
+                    showToast("Anotações limpas!");
+                });
             });
         }
 
         // --- Inicialização da Aplicação ---
         function init() {
             const themeSelect = document.getElementById('theme-select');
-            themeSelect.innerHTML = Object.keys(phrasesData).map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('');
+            // As chaves em phrases.json são minúsculas
+            themeSelect.innerHTML = Object.keys(phrasesData)
+              .filter(t => t !== 'meta') // Não mostrar 'meta' como opção selecionável
+              .map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('');
             
             initializeShufflers();
             setupEventListeners();

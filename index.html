@@ -25,12 +25,9 @@
         
         /* Tema Claro (Cores Renovadas) */
         .light-theme {
-            --bg-main: #f8fafc; /* Slate 50 */
-            --bg-surface: #ffffff; /* White */
-            --bg-surface-light: #f1f5f9; /* Slate 100 */
-            --text-main: #1e293b; /* Slate 800 */
-            --text-muted: #64748b; /* Slate 500 */
-            --border-color: #e2e8f0; /* Slate 200 */
+            --bg-main: #f8fafc; --bg-surface: #ffffff; --bg-surface-light: #f1f5f9;
+            --text-main: #1e293b; --text-muted: #64748b;
+            --border-color: #e2e8f0;
         }
 
         /* Aplicação dos temas e transições */
@@ -133,7 +130,7 @@
     
     <!-- === SCRIPT PRINCIPAL === -->
     <script>
-    (async function() {
+    document.addEventListener('DOMContentLoaded', async () => {
         // --- Definições de Tipo (JSDoc) ---
         /** @typedef {{characters: Character[], plotlines: Plotline[], turning_points: TurningPoint[], theme: 'light'|'dark', history: string}} State */
         /** @typedef {{id: number, name: string, special_trait: string, emoji: string, identities: string[], descriptors: string[], notes: string}} Character */
@@ -674,7 +671,7 @@
         }
 
         init();
-    })();
+    });
     </script>
 </body>
 </html>

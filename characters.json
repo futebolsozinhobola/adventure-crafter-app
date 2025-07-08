@@ -1,0 +1,36 @@
+{
+  "special_characteristics": [
+    { "range": [1, 50], "value": ["Individual", "👤"] },
+    { "range": [51, 57], "value": ["Organização", "🏢"] },
+    { "range": [58, 64], "value": ["Objeto", "🔮"] },
+    { "range": [65, 71], "value": ["Conectado à Trama", "🔗"] },
+    { "range": [72, 78], "value": ["Não Conectado à Trama", "🤷"] },
+    { "range": [79, 85], "value": ["Ajuda na Trama", "👍"] },
+    { "range": [86, 92], "value": ["Atrapalha a Trama", "👎"] },
+    { "range": [93, 100], "value": ["Conectado a Personagem Existente", "🤝"] }
+  ],
+  "identities": [
+    "Guerreiro", "Curandeiro", "Protetor", "Assistente", "Dependente", "Governante", "Administrador", "Vítima", "Estudioso", "Especialista", "Elite", "Investigador", "Criminoso", "Apoiador", "Indefeso", "Forasteiro", "Mediador", "Artista", "Socialite", "Atleta", "Intérprete", "Representante", "Mercador", "Comerciante", "Criador", "Servo", "Trabalhador", "Religioso", "Caçador", "Líder", "Lutador", "Artesão", "Ladrão", "Radical", "Executivo", "Bandido", "Guarda", "Guardião", "Explorador", "Herói", "Vilão", "Enganador", "Engenheiro", "Batedor", "Consertador", "Andarilho", "Subversivo", "Soldado", "Policial", "Cientista", "Coletor", "Estrangeiro", "Sobrevivente", "Apostador", "Vigarista", "Fazendeiro", "Assassino", "Profissional", "Motorista/Piloto", "Estudante", "Organizador", "Entregador", "Lacaio", "Professor", "Exótico"
+  ],
+  "descriptors": [
+    "Feio", "Belo", "Sujo", "Doce", "Incomum", "Comum", "Inteligente", "Ignorante", "Educado", "Habilidoso", "Treinado", "Rude", "Polido", "Chique", "Áspero", "Limpo", "Rico", "Pobre", "Pequeno", "Grande", "Quieto", "Barulhento", "Rápido", "Lento", "Exótico", "Uniformizado", "Interessante", "Colorido", "Informativo", "Perigoso", "Inepto", "Desajeitado", "Capaz", "Intrusivo", "Respeitoso", "Primitivo", "Sofisticado", "Elegante", "Armado", "Diferente", "Jovem", "Velho", "Difícil", "Prestativo", "Nocivo", "Disciplinado", "Errático", "Selvagem", "Louco", "Imponente", "Manso", "Bem-humorado", "Assustado", "Corajoso", "Forte", "Fraco", "Impulsivo", "Estratégico", "Ingênuo", "Confiante", "Surpreendente", "Passivo", "Ousado", "Descuidado", "Cauteloso", "Furtivo", "Intimidador", "Poderoso", "Impotente", "Ferido", "Ríspido", "Gentil", "Carinhoso", "Íntegro", "Arrogante", "Curioso", "Solidário", "Heroico"
+  ],
+  "name_parts": {
+    "Fantasia": [
+      ["Arion", "Elara", "Kael", "Thorne", "Lirael", "Zarek", "Alistair", "Briar", "Caspian", "Darian", "Elowen", "Faelan", "Gareth", "Gwendolyn", "Hadriel", "Isolde", "Joric", "Kaelen", "Lyra", "Merek", "Niamh", "Orin", "Perrin", "Quillan", "Rhiannon", "Seraphina", "Talon", "Uther", "Valerius", "Xylia", "Yseult", "Zephyr", "Aerion", "Bronwyn", "Corvus", "Daelan", "Elysia", "Fenris", "Galadriel", "Haldor", "Ithiliel", "Jorvik", "Kaelus", "Lira", "Marius", "Nyx", "Orion", "Pyralia", "Qyran", "Roric", "Sorin", "Tauriel", "Alaric", "Briseis", "Caelan", "Dracon", "Eira", "Fendrel", "Gorok", "Halia", "Icarus", "Jorah", "Kyra", "Leoric", "Morgana", "Oberon", "Phaedra", "Quintus", "Ravenna", "Silvanus", "Tamsin", "Ulrich", "Vespera", "Wren", "Xander", "Yvaine", "Zosimus", "Aeliana", "Baelor", "Cerys", "Draven", "Evadne", "Faelar", "Grimgar", "Hesperia", "lone", "Jareth", "Annon", "Bastian", "Circe", "Darius", "Elara", "Finnian", "Gideon", "Heleth", "Ilyana", "Kael", "Lianna", "Malachi", "Nerys", "Orion", "Pryderi", "Ren", "Saskia", "Torin", "Vala", "Wynn", "Xylos", "Zaltar"],
+      ["Silverwood", "Stormwind", "Ironhand", "Moonshadow", "Ashworth", "Blackwood", "Craghammer", "Dawnbringer", "Everflame", "Frostbeard", "Greycastle", "Highcliff", "Ironforge", "Jadefall", "Lightbringer", "Nightshade", "Oakenhield", "Proudmoore", "Quickbow", "Ravenspire", "Shadowalker", "Thunderstrike", "Underbough", "Voidgazer", "Whisperwind", "Wyrmsbane", "Yarrow", "Zephyrson", "Cinderfall", "Dragonfyre", "Starfall", "Sunstrider", "Stonefist", "Wintergale", "o Sábio", "da Floresta Sussurrante", "Matador de Dragões", "Coração de Leão", "Mão de Prata", "Olho de Estrela", "Lâmina Negra", "Escudo de Carvalho", "Andarilho das Sombras", "Portador da Luz", "Coroa de Espinhos", "Manto de Névoa", "de Alta Torre", "Filho do Trovão", "Nascido do Fogo", "Alma de Gelo", "Guardião da Aurora", "Caçador de Espectros", "Herdeiro do Vazio", "Mão de Ferro", "Lança do Destino", "das Terras Ermas", "o Encantado", "Canção do Rio", "Martelo de Guerra", "o Errante", "Sopro de Inverno", "o Imortal", "de Valdria", "o Conquistador", "o Vidente", "o Bardo", "o Protetor"]
+    ],
+    "Fantasia (Organizações)": [
+      ["Ordem", "Guilda", "Círculo", "Irmandade", "Clã", "Casa", "Legião", "Conclave", "Sociedade", "Aliança", "Coven", "Capítulo", "Conselho", "Corte"],
+      ["da Chama Eterna", "do Dragão Adormecido", "da Lâmina de Prata", "dos Magos de Gelo", "da Montanha Solitária", "dos Caçadores de Sombras", "do Carvalho Ancestral", "da Aurora Dourada", "do Corvo de Ébano", "dos Guardiões do Véu", "do Sol Negro", "da Rosa de Ferro", "dos Andarilhos do Vento", "do Crepúsculo de Jade"]
+    ],
+    "Fantasia (Objetos)": [
+      ["Espada", "Amuleto", "Orbe", "Cajado", "Elixir", "Tomo", "Anel", "Coroa", "Gema", "Runa", "Manto", "Adaga", "Machado", "Arco", "Escudo", "Poção", "Grimório", "Pingente"],
+      ["da Perdição", "de Gelo", "do Dragão", "da Luz Estelar", "dos Antigos", "da Alma", "Sussurrante", "de Ébano", "da Verdade", "do Esquecimento", "da Profecia", "de Sangue", "do Sol", "da Lua", "de Mithril", "da Escuridão", "Sagrado", "Profano"]
+    ],
+    "Ficção Científica": [
+      ["Zane", "Cora", "Jax", "Kaelen", "Roric", "Nyx", "Alita", "Bex", "Crix", "Darian", "Echo", "Flint", "Gideon", "Helix", "Icarus", "Jyn", "Kael", "Lyra", "Morpheus", "Nash", "Orion", "Pax", "Quorra", "Riven", "Silas", "Tarkin", "Uriah", "Vex", "Wren", "Xylo", "Yara", "Zeke", "Kaelus", "Rogue", "Cypher", "Jett", "Raze", "Spike", "Deckard", "Korben", "Leeloo", "Ripley", "Sloan", "Axel", "Blaze", "Cassian", "Daxon", "Ezra", "Fenix", "Gage", "Hux", "Jagger", "Kix", "Lennox", "Maverick", "Nero", "Onyx", "Pike", "Ronan", "Stellan", "Tycho", "Vanguard", "Zorion", "Unit", "Protocol", "Subject", "Alpha", "Omega", "Asimov", "Bradbury", "Clarke", "Decker", "Ender", "Garrus", "Hawke", "Javik", "Kain", "Liara", "Mordin", "Neo", "Ordis", "Proximo", "Rex", "Shepard", "Tali", "Urdnot", "Vetra", "Wrex", "Yor"],
+      ["Stellar", "Cygnus", "Orion", "Vex", "Vector", "Core", "Xylos", "Mechan", "Andromeda", "Blackburn", "Cortex", "Dynamo", "Exon", "Fusion", "Galileo", "Helios", "lon", "Joule", "Kessler", "Lithium", "Maximus", "Nova", "Photon", "Quasar", "Raptor", "Stryker", "Titan", "Uplink", "Volkov", "Welkin", "Xenon", "Yutani", "Zetacorp", "Krylov", "Axiom", "Nexus", "-734", "-9", "-B", "Stardust", "da Nebulosa", "do Setor Gamma", "Piloto de Caça", "Engenheiro de Bordo", "Navegador Estelar", "Corsário do Vazio", "Cromado", "Sintético", "Aumentado", "o Renegado", "da Colônia Titã", "da Frota Estelar", "Androide", "Classe-D", "o Contrabandista", "de Cyberia", "da Zona Proibida", "o Mutante", "da Corporação Omni", "da Aliança", "o Nômade", "o Pioneiro", "o Sobrevivente", "do Sistema Kepler", "o Pacificador", "o Executor", "o Tecnocrata", "o Bio-Aprimorado", "o Explorador"]
+    ]
+  }
+}

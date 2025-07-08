@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Crafter Web</title>
+    <!-- Carregamento de fontes do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Inclusão do Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos customizados e sistema de temas */
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-title { font-family: 'Poppins', sans-serif; }
+        
+        /* Tema Escuro (Padrão) */
+        :root {
+            --bg-main: #0f172a; --bg-surface: #1e293b; --bg-surface-light: #334155;
+            --text-main: #f8fafc; --text-muted: #94a3b8; --primary: #3b82f6;
+            --primary-dark: #2563eb; --accent: #10b981; --danger: #ef4444;
+            --border-color: #334155;
+        }
+        
+        /* Tema Claro */
+        .light-theme {
+            --bg-main: #f1f5f9; --bg-surface: #ffffff; --bg-surface-light: #e2e8f0;
+            --text-main: #0f172a; --text-muted: #475569; --primary: #3b82f6;
+            --primary-dark: #2563eb; --accent: #10b981; --danger: #ef4444;
+            --border-color: #cbd5e1;
+        }
+
+        /* Aplicação dos temas e transições suaves */
+        body { background-color: var(--bg-main); color: var(--text-main); transition: background-color 0.3s, color 0.3s; }
+        .card { background-color: var(--bg-surface); transition: background-color 0.3s; }
+        .card-light { background-color: var(--bg-surface-light); transition: background-color 0.3s; }
+        .text-muted { color: var(--text-muted); }
+        .btn-primary { background-color: var(--primary); transition: background-color 0.2s; }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        .btn-accent { background-color: var(--accent); transition: background-color 0.2s; }
+        .btn-accent:hover { background-color: #059669; }
+        .btn-danger { background-color: var(--danger); transition: background-color 0.2s; }
+        .btn-danger:hover { background-color: #dc2626; }
+        .border-color { border-color: var(--border-color); }
+        
+        /* Melhorias de Acessibilidade e Foco */
+        *:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* Animações */
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        .pop-in { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popIn { from { transform: translateY(10px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+
+        /* Estilos do Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-surface); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-surface-light); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        
+        #loading-overlay, #main-content { transition: opacity 0.5s ease-in-out; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- === TELA DE CARREGAMENTO === -->
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex flex-col justify-center items-center">
+        <svg class="animate-spin h-10 w-10 text-white mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <p id="loading-status" class="text-white text-lg">Carregando dados da aventura...</p>
+    </div>
+
+    <!-- === CABEÇALHO === -->
+    <header class="p-4 flex justify-between items-center card shadow-lg sticky top-0 z-20">
+        <h1 class="text-2xl font-title tracking-tight">Adventure Crafter</h1>
+        <div class="flex items-center space-x-2">
+            <button id="save-btn" class="px-3 py-2 text-sm font-medium text-white rounded-md btn-primary">Salvar</button>
+            <label for="load-file" class="cursor-pointer px-3 py-2 text-sm font-medium text-white rounded-md btn-primary">Carregar</label>
+            <input type="file" id="load-file" class="hidden" accept=".json">
+            <button id="theme-switcher" class="p-2 rounded-md card-light" aria-label="Mudar tema">
+                <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- === CONTEÚDO PRINCIPAL === -->
+    <main id="main-content" class="opacity-0">
+        <div class="flex flex-col md:flex-row">
+            <!-- Navegação Lateral -->
+            <nav class="p-4 md:w-64 border-r border-color">
+                <ul class="space-y-2 sticky top-24">
+                    <li><button data-section="generator" class="nav-btn w-full text-left p-3 rounded-md font-medium text-white bg-blue-600">Gerador</button></li>
+                    <li><button data-section="characters" class="nav-btn w-full text-left p-3 rounded-md font-medium text-muted hover:bg-blue-500 hover:text-white transition-colors">Personagens</button></li>
+                    <li><button data-section="plotlines" class="nav-btn w-full text-left p-3 rounded-md font-medium text-muted hover:bg-blue-500 hover:text-white transition-colors">Linhas de Enredo</button></li>
+                    <li><button data-section="turning_points" class="nav-btn w-full text-left p-3 rounded-md font-medium text-muted hover:bg-blue-500 hover:text-white transition-colors">Pontos de Virada</button></li>
+                </ul>
+            </nav>
+
+            <!-- Container das Seções -->
+            <div class="flex-1 p-4 md:p-6">
+                <!-- Seção: Gerador -->
+                <section id="generator-section" class="app-section grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
+                    <div class="lg:col-span-1 card p-6 rounded-lg shadow-md">
+                        <h2 class="text-xl font-title mb-4">Gerador de Pontos de Enredo</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="theme-select" class="block text-sm font-medium text-muted mb-1">Tema</label>
+                                <select id="theme-select" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary"></select>
+                            </div>
+                            <button id="generate-plot-point-btn" class="w-full py-3 rounded-md text-white font-semibold btn-accent shadow-lg transform hover:scale-105 transition-transform">Gerar Ponto de Enredo</button>
+                        </div>
+                    </div>
+                    <div id="result-display" class="lg:col-span-2 card p-6 rounded-lg shadow-md flex flex-col justify-center items-center text-center min-h-[200px]">
+                        <h3 id="result-title" class="text-2xl font-title mb-2">Clique em 'Gerar' para começar</h3>
+                        <p id="result-explanation" class="text-muted">Aguardando geração...</p>
+                    </div>
+                </section>
+
+                <!-- Seção: Personagens -->
+                <section id="characters-section" class="app-section hidden fade-in">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-title">Personagens</h2>
+                        <button id="add-character-btn" class="px-4 py-2 rounded-md text-white font-semibold btn-accent">Novo Personagem</button>
+                    </div>
+                    <div id="character-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+                </section>
+
+                <!-- Seção: Linhas de Enredo -->
+                <section id="plotlines-section" class="app-section hidden fade-in">
+                     <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-title">Linhas de Enredo</h2>
+                        <button id="add-plotline-btn" class="px-4 py-2 rounded-md text-white font-semibold btn-accent">Nova Linha de Enredo</button>
+                    </div>
+                    <div id="plotline-list" class="space-y-4"></div>
+                </section>
+
+                <!-- Seção: Pontos de Virada -->
+                <section id="turning_points-section" class="app-section hidden fade-in">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-title">Pontos de Virada</h2>
+                        <button id="add-turning-point-btn" class="px-4 py-2 rounded-md text-white font-semibold btn-accent">Novo Ponto de Virada</button>
+                    </div>
+                    <div id="turning-point-list" class="space-y-4"></div>
+                </section>
+            </div>
+        </div>
+    </main>
+    
+    <!-- === MODAL === -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-70 z-40 hidden"></div>
+    <div id="modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 card w-11/12 md:w-2/3 lg:w-1/2 max-w-2xl rounded-lg shadow-2xl z-50 hidden">
+        <div class="relative p-6 md:p-8">
+            <button id="modal-close-btn" class="absolute top-4 right-4 text-muted hover:text-main" aria-label="Fechar modal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+    
+    <!-- === TOAST (Notificações) === -->
+    <div id="toast" class="fixed bottom-5 right-5 card-light py-3 px-5 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none">
+        <p id="toast-message" class="text-text-main"></p>
+    </div>
+    
+    <!-- === SCRIPT PRINCIPAL === -->
+    <script>
+    // IIFE para encapsular o escopo e usar async/await no nível superior
+    (async function() {
+        // Definições de tipo com JSDoc para clareza
+        /**
+         * @typedef {Object} State
+         * @property {Character[]} characters
+         * @property {Plotline[]} plotlines
+         * @property {TurningPoint[]} turning_points
+         * @property {('light'|'dark')} theme
+         */
+        /** @typedef {{id: number, name: string, special_trait: string, emoji: string, identities: string[], descriptors: string[], notes: string}} Character */
+        /** @typedef {{id: number, name: string, full_description: string, notes: string}} Plotline */
+        /** @typedef {{id: number, title: string, plotlineId: number|null, status: string, notes: string}} TurningPoint */
+
+        // --- CARREGAMENTO DE DADOS ---
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const loadingStatus = document.getElementById('loading-status');
+        const mainContent = document.getElementById('main-content');
+
+        async function fetchData(url, name) {
+            loadingStatus.textContent = `Carregando ${name}...`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Falha ao carregar ${url}: ${response.statusText}`);
+                return await response.json();
+            } catch (error) {
+                loadingStatus.textContent = `Erro ao carregar ${name}. Verifique o console e a estrutura de arquivos.`;
+                console.error(error);
+                return null;
+            }
+        }
+
+        const [plotlinesData, charactersData, phrasesData] = await Promise.all([
+            fetchData('plotlines.json', 'linhas de enredo'),
+            fetchData('characters.json', 'personagens'),
+            fetchData('phrases.json', 'frases de efeito')
+        ]);
+        
+        if (!plotlinesData || !charactersData || !phrasesData) {
+            loadingStatus.textContent = "Não foi possível carregar os dados. A aplicação não pode iniciar.";
+            return;
+        }
+        
+        loadingOverlay.style.opacity = '0';
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+            mainContent.style.opacity = '1';
+        }, 500);
+
+        // --- ESTADO DA APLICAÇÃO ---
+        /** @type {State} */
+        let state = {
+            characters: [],
+            plotlines: [],
+            turning_points: [],
+            theme: 'dark'
+        };
+
+        // --- UTILITÁRIOS E GERADORES ---
+        class CycledShuffler {
+            constructor(items) {
+                if (!items || items.length === 0) throw new Error("CycledShuffler: a lista de itens não pode ser vazia.");
+                this._original_items = [...items];
+                this._shuffled_items = [];
+                this._shuffle_and_fill();
+            }
+            _shuffle_and_fill() {
+                this._shuffled_items = [...this._original_items];
+                for (let i = this._shuffled_items.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [this._shuffled_items[i], this._shuffled_items[j]] = [this._shuffled_items[j], this._shuffled_items[i]];
+                }
+            }
+            next() {
+                if (this._shuffled_items.length === 0) this._shuffle_and_fill();
+                return this._shuffled_items.pop();
+            }
+        }
+
+        const shufflers = {};
+        function initializeShufflers() {
+            shufflers.plotlines = {};
+            for (const theme in plotlinesData) {
+                shufflers.plotlines[theme] = {
+                    goals: new CycledShuffler(plotlinesData[theme].goals),
+                    subjects: new CycledShuffler(plotlinesData[theme].subjects),
+                    focuses: new CycledShuffler(plotlinesData[theme].focuses)
+                };
+            }
+            shufflers.characters = {
+                identities: new CycledShuffler(charactersData.identities),
+                descriptors: new CycledShuffler(charactersData.descriptors),
+                name_parts: {}
+            };
+            for (const theme in charactersData.name_parts) {
+                shufflers.characters.name_parts[theme] = [
+                    new CycledShuffler(charactersData.name_parts[theme][0]),
+                    new CycledShuffler(charactersData.name_parts[theme][1])
+                ];
+            }
+        }
+        
+        const rollDie = (sides) => Math.floor(Math.random() * sides) + 1;
+        const rollOnTable = (table, roll) => table.find(item => roll >= item.range[0] && roll <= item.range[1])?.value || null;
+        const showToast = (message) => {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+        };
+
+        // --- RENDERIZAÇÃO (UI) ---
+        const sections = document.querySelectorAll('.app-section');
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+
+        const renderAll = () => {
+            renderCharacters();
+            renderPlotlines();
+            renderTurningPoints();
+        };
+
+        function renderCharacters() {
+            const list = document.getElementById('character-list');
+            list.innerHTML = state.characters.length === 0
+                ? `<p class="text-muted col-span-full text-center">Nenhum personagem criado.</p>`
+                : state.characters.map(char => `
+                    <div class="card p-4 rounded-lg shadow-md flex flex-col justify-between fade-in">
+                        <div>
+                            <h3 class="font-title text-lg">${char.emoji} ${char.name}</h3>
+                            <p class="text-sm text-muted font-semibold">${char.special_trait}</p>
+                            <p class="text-sm text-muted"><b>Identidades:</b> ${char.identities.join(', ')}</p>
+                            <p class="text-sm text-muted"><b>Descritores:</b> ${char.descriptors.join(', ')}</p>
+                            <textarea class="w-full card-light p-2 mt-2 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" placeholder="Anotações..." data-id="${char.id}" data-type="character" data-prop="notes">${char.notes}</textarea>
+                        </div>
+                        <button class="delete-btn mt-2 text-xs text-red-400 hover:text-red-600 self-end" data-type="character" data-id="${char.id}">Remover</button>
+                    </div>
+                `).join('');
+        }
+
+        function renderPlotlines() {
+            const list = document.getElementById('plotline-list');
+            list.innerHTML = state.plotlines.length === 0
+                ? `<p class="text-muted text-center">Nenhuma linha de enredo criada.</p>`
+                : state.plotlines.map(plot => `
+                    <div class="card p-4 rounded-lg shadow-md fade-in">
+                        <input type="text" value="${plot.name}" class="font-title text-lg bg-transparent w-full mb-1 focus:bg-gray-700 rounded p-1" data-id="${plot.id}" data-type="plotline" data-prop="name">
+                        <p class="text-sm text-muted mb-2">${plot.full_description}</p>
+                        <textarea class="w-full card-light p-2 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" placeholder="Anotações..." data-id="${plot.id}" data-type="plotline" data-prop="notes">${plot.notes}</textarea>
+                        <button class="delete-btn mt-2 text-xs text-red-400 hover:text-red-600 float-right" data-type="plotline" data-id="${plot.id}">Remover</button>
+                    </div>
+                `).join('');
+        }
+        
+        function renderTurningPoints() {
+            const list = document.getElementById('turning-point-list');
+            list.innerHTML = state.turning_points.length === 0
+                ? `<p class="text-muted text-center">Nenhum ponto de virada criado.</p>`
+                : state.turning_points.map(tp => {
+                    const linkedPlot = state.plotlines.find(p => p.id === tp.plotlineId);
+                    return `
+                    <div class="card p-4 rounded-lg shadow-md fade-in">
+                        <input type="text" value="${tp.title}" class="font-title text-lg bg-transparent w-full mb-2 focus:bg-gray-700 rounded p-1" data-id="${tp.id}" data-type="turning_point" data-prop="title">
+                        <div class="text-sm space-y-2">
+                            <p><span class="font-semibold text-muted">Enredo:</span> ${linkedPlot?.name || 'Nenhum'}</p>
+                            <p><span class="font-semibold text-muted">Status:</span> ${tp.status}</p>
+                            <textarea class="w-full card-light p-2 rounded-md text-sm border-none focus:ring-2 focus:ring-primary" placeholder="Anotações do ponto de virada..." data-id="${tp.id}" data-type="turning_point" data-prop="notes">${tp.notes}</textarea>
+                        </div>
+                        <button class="delete-btn mt-2 text-xs text-red-400 hover:text-red-600 float-right" data-type="turning_point" data-id="${tp.id}">Remover</button>
+                    </div>
+                `}).join('');
+        }
+
+        // --- MODAL ---
+        const openModal = (content) => {
+            modalContent.innerHTML = content;
+            modalBackdrop.classList.remove('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('pop-in');
+            modalBackdrop.classList.add('fade-in');
+        };
+        const closeModal = () => {
+            modal.classList.remove('pop-in');
+            modalBackdrop.classList.remove('fade-in');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modalBackdrop.classList.add('hidden');
+                modalContent.innerHTML = '';
+            }, 300);
+        };
+
+        // --- LÓGICA DOS GERADORES ---
+        function generatePlotPoint() {
+            let theme = document.getElementById('theme-select').value;
+            let roll = rollDie(100);
+            let phraseData = rollOnTable(phrasesData[theme], roll);
+
+            if (phraseData && phraseData.title === "META") {
+                theme = 'meta';
+                roll = rollDie(100);
+                phraseData = rollOnTable(phrasesData[theme], roll);
+            }
+            
+            const resultDisplay = document.getElementById('result-display');
+            resultDisplay.classList.remove('fade-in');
+            void resultDisplay.offsetWidth;
+            resultDisplay.classList.add('fade-in');
+            
+            document.getElementById('result-title').textContent = phraseData.title;
+            document.getElementById('result-explanation').textContent = phraseData.desc;
+        }
+        
+        function showCharacterGenerator() {
+            const nameThemes = Object.keys(charactersData.name_parts).map(t => `<option value="${t}">${t}</option>`).join('');
+            const content = `
+                <h2 class="font-title text-2xl mb-6 text-center">Gerador de Personagem</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="char-name-theme" class="block text-sm font-medium text-muted mb-1">Tema do Nome</label>
+                        <select id="char-name-theme" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${nameThemes}</select>
+                    </div>
+                    <button id="generate-char-name-btn" class="w-full py-2 rounded-md text-white font-semibold btn-primary">Gerar Nome</button>
+                    <input type="text" id="char-name-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" placeholder="Nome do Personagem">
+                </div>
+                <div class="flex justify-end space-x-3 mt-8">
+                    <button id="cancel-modal-btn" class="px-4 py-2 rounded-md card-light">Cancelar</button>
+                    <button id="confirm-add-char-btn" class="px-4 py-2 rounded-md text-white btn-accent">Adicionar Personagem</button>
+                </div>
+            `;
+            openModal(content);
+            
+            document.getElementById('generate-char-name-btn').onclick = () => {
+                const theme = document.getElementById('char-name-theme').value;
+                const [firstNameShuffler, lastNameShuffler] = shufflers.characters.name_parts[theme];
+                let name = `${firstNameShuffler.next()} ${lastNameShuffler.next()}`;
+                if (theme === "Ficção Científica" && rollDie(100) <= 20) {
+                    name = `${firstNameShuffler.next()}${lastNameShuffler.next()}-${rollDie(899) + 100}`;
+                }
+                document.getElementById('char-name-input').value = name;
+            };
+
+            document.getElementById('confirm-add-char-btn').onclick = () => {
+                const name = document.getElementById('char-name-input').value;
+                if (!name) { showToast('Por favor, insira um nome.'); return; }
+
+                const [special_trait, emoji] = rollOnTable(charactersData.special_characteristics, rollDie(100));
+                
+                const identities = [];
+                const numIdentities = rollDie(100) <= 33 ? 2 : 1;
+                for(let i=0; i<numIdentities; i++) identities.push(shufflers.characters.identities.next());
+
+                const descriptors = [];
+                const numDescriptors = rollDie(100) <= 21 ? 2 : 1;
+                for(let i=0; i<numDescriptors; i++) descriptors.push(shufflers.characters.descriptors.next());
+
+                const newChar = { id: Date.now(), name, special_trait, emoji, identities, descriptors, notes: '' };
+                state.characters.push(newChar);
+                renderCharacters();
+                closeModal();
+                showToast(`Personagem "${name}" adicionado!`);
+            };
+            document.getElementById('cancel-modal-btn').onclick = closeModal;
+        }
+
+        function showPlotlineGenerator() {
+            const plotThemes = Object.keys(plotlinesData).map(t => `<option value="${t}">${t}</option>`).join('');
+            const content = `
+                <h2 class="font-title text-2xl mb-6 text-center">Gerador de Linha de Enredo</h2>
+                <div class="space-y-4">
+                     <div>
+                        <label for="plot-theme" class="block text-sm font-medium text-muted mb-1">Tema</label>
+                        <select id="plot-theme" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">${plotThemes}</select>
+                    </div>
+                    <button id="generate-plot-desc-btn" class="w-full py-2 rounded-md text-white font-semibold btn-primary">Gerar Descrição</button>
+                    <p id="generated-plot-desc" class="text-center p-4 card-light rounded-md min-h-[50px]">...</p>
+                    <input type="text" id="plot-name-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" placeholder="Dê um nome curto para o enredo">
+                </div>
+                <div class="flex justify-end space-x-3 mt-8">
+                    <button id="cancel-modal-btn" class="px-4 py-2 rounded-md card-light">Cancelar</button>
+                    <button id="confirm-add-plot-btn" class="px-4 py-2 rounded-md text-white btn-accent">Adicionar Enredo</button>
+                </div>
+            `;
+            openModal(content);
+            
+            let fullDescription = '';
+            document.getElementById('generate-plot-desc-btn').onclick = () => {
+                const theme = document.getElementById('plot-theme').value;
+                const { goals, subjects, focuses } = shufflers.plotlines[theme];
+                fullDescription = `${goals.next()} ${subjects.next()} ${focuses.next()}.`;
+                document.getElementById('generated-plot-desc').textContent = fullDescription;
+            };
+
+            document.getElementById('confirm-add-plot-btn').onclick = () => {
+                const name = document.getElementById('plot-name-input').value;
+                if (!name) { showToast('Por favor, dê um nome para o enredo.'); return; }
+                if (!fullDescription) { showToast('Por favor, gere uma descrição primeiro.'); return; }
+                const newPlot = { id: Date.now(), name, full_description: fullDescription, notes: '' };
+                state.plotlines.push(newPlot);
+                renderAll();
+                closeModal();
+                showToast(`Enredo "${name}" adicionado!`);
+            };
+            document.getElementById('cancel-modal-btn').onclick = closeModal;
+        }
+
+        function showTurningPointGenerator() {
+            const plotlineOptions = state.plotlines.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+            const content = `
+                <h2 class="font-title text-2xl mb-6 text-center">Novo Ponto de Virada</h2>
+                <div class="space-y-4">
+                    <input type="text" id="tp-title-input" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary" placeholder="Título do Ponto de Virada">
+                    <div>
+                        <label for="tp-plotline-select" class="block text-sm font-medium text-muted mb-1">Associar a qual Linha de Enredo?</label>
+                        <select id="tp-plotline-select" class="w-full p-2 rounded-md card-light border-none focus:ring-2 focus:ring-primary">
+                            <option value="">Nenhuma</option>
+                            ${plotlineOptions}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-muted mb-1">Status do Enredo</label>
+                        <div class="flex space-x-4">
+                           <label><input type="radio" name="tp-status" value="Nova" checked class="text-primary focus:ring-primary"> Nova</label>
+                           <label><input type="radio" name="tp-status" value="Desenvolvimento" class="text-primary focus:ring-primary"> Desenvolvimento</label>
+                           <label><input type="radio" name="tp-status" value="Conclusão" class="text-primary focus:ring-primary"> Conclusão</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 mt-8">
+                    <button id="cancel-modal-btn" class="px-4 py-2 rounded-md card-light">Cancelar</button>
+                    <button id="confirm-add-tp-btn" class="px-4 py-2 rounded-md text-white btn-accent">Adicionar Ponto de Virada</button>
+                </div>
+            `;
+            openModal(content);
+            
+            document.getElementById('confirm-add-tp-btn').onclick = () => {
+                const title = document.getElementById('tp-title-input').value;
+                if (!title) { showToast('Por favor, dê um título ao Ponto de Virada.'); return; }
+                const newTP = {
+                    id: Date.now(),
+                    title,
+                    plotlineId: parseInt(document.getElementById('tp-plotline-select').value) || null,
+                    status: document.querySelector('input[name="tp-status"]:checked').value,
+                    notes: ''
+                };
+                state.turning_points.push(newTP);
+                renderTurningPoints();
+                closeModal();
+                showToast(`Ponto de Virada "${title}" adicionado!`);
+            };
+            document.getElementById('cancel-modal-btn').onclick = closeModal;
+        }
+
+        // --- EVENT LISTENERS ---
+        function setupEventListeners() {
+            // Navegação
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetSectionId = button.dataset.section + '-section';
+                    navButtons.forEach(btn => {
+                        btn.classList.remove('bg-blue-600', 'text-white');
+                        btn.classList.add('text-muted');
+                    });
+                    button.classList.add('bg-blue-600', 'text-white');
+                    button.classList.remove('text-muted');
+                    sections.forEach(section => section.classList.toggle('hidden', section.id !== targetSectionId));
+                });
+            });
+
+            // Botões de Adicionar
+            document.getElementById('generate-plot-point-btn').addEventListener('click', generatePlotPoint);
+            document.getElementById('add-character-btn').addEventListener('click', showCharacterGenerator);
+            document.getElementById('add-plotline-btn').addEventListener('click', showPlotlineGenerator);
+            document.getElementById('add-turning-point-btn').addEventListener('click', showTurningPointGenerator);
+            
+            // Deleção e Edição (usando delegação de eventos)
+            mainContent.addEventListener('click', (e) => {
+                if (e.target.matches('.delete-btn')) {
+                    const id = parseInt(e.target.dataset.id);
+                    const type = e.target.dataset.type;
+                    const listName = type === 'turning_point' ? 'turning_points' : type + 's';
+                    
+                    if (type === 'plotline') {
+                        state.turning_points.forEach(tp => {
+                            if (tp.plotlineId === id) tp.plotlineId = null;
+                        });
+                    }
+
+                    state[listName] = state[listName].filter(item => item.id !== id);
+                    renderAll();
+                    showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} removido.`);
+                }
+            });
+
+            mainContent.addEventListener('input', (e) => {
+                const target = e.target;
+                if (target.matches('textarea, input[type="text"]')) {
+                    const id = parseInt(target.dataset.id);
+                    const type = target.dataset.type;
+                    const prop = target.dataset.prop;
+                    if (!id || !type || !prop) return;
+
+                    const listName = type === 'turning_point' ? 'turning_points' : type + 's';
+                    const item = state[listName].find(item => item.id === id);
+                    if (item) item[prop] = target.value;
+                }
+            });
+
+            // Tema
+            document.getElementById('theme-switcher').addEventListener('click', () => {
+                document.body.classList.toggle('light-theme');
+                const isLight = document.body.classList.contains('light-theme');
+                state.theme = isLight ? 'light' : 'dark';
+                document.getElementById('theme-icon-dark').classList.toggle('hidden', isLight);
+                document.getElementById('theme-icon-light').classList.toggle('hidden', !isLight);
+            });
+
+            // Salvar / Carregar
+            document.getElementById('save-btn').addEventListener('click', () => {
+                const dataStr = JSON.stringify(state, null, 2);
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr));
+                linkElement.setAttribute('download', 'adventure-crafter.json');
+                linkElement.click();
+                showToast('Aventura salva!');
+            });
+
+            document.getElementById('load-file').addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const loadedState = JSON.parse(e.target.result);
+                        if (loadedState.characters && loadedState.plotlines && loadedState.turning_points) {
+                            state = loadedState;
+                            initializeShufflers();
+                            renderAll();
+                            
+                            const isLight = state.theme === 'light';
+                            document.body.classList.toggle('light-theme', isLight);
+                            document.getElementById('theme-icon-dark').classList.toggle('hidden', isLight);
+                            document.getElementById('theme-icon-light').classList.toggle('hidden', !isLight);
+
+                            showToast('Aventura carregada!');
+                        } else throw new Error('Arquivo JSON inválido ou malformado.');
+                    } catch (error) { 
+                        showToast(error.message); 
+                        console.error(error);
+                    }
+                };
+                reader.readAsText(file);
+                event.target.value = '';
+            });
+
+            // Fechar Modal
+            document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+            modalBackdrop.addEventListener('click', closeModal);
+        }
+
+        // --- INICIALIZAÇÃO DA APLICAÇÃO ---
+        function init() {
+            // Popula o seletor de temas do gerador
+            const themeSelect = document.getElementById('theme-select');
+            const phraseThemes = Object.keys(phrasesData);
+            themeSelect.innerHTML = phraseThemes.map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('');
+            
+            initializeShufflers();
+            setupEventListeners();
+            renderAll();
+        }
+
+        init();
+
+    })();
+    </script>
+</body>
+</html>

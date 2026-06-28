@@ -3,38 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adventure Crafter Pro - Web Edition</title>
-    <!-- Carregamento de Fontes e CSS -->
+    <title>Adventure Crafter Pro</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos customizados e sistema de temas */
-        body { font-family: 'Roboto', sans-serif; }
-        h1, h2, h3, .font-title { font-family: 'Roboto Slab', serif; }
-        
-        /* Tema Escuro (Padrão) */
+        /* === SISTEMA DE CORES === */
         :root {
-            --bg-main: #0f172a; --bg-surface: #1e293b; --bg-surface-light: #334155;
-            --text-main: #f8fafc; --text-muted: #94a3b8; --primary: #3b82f6;
-            --primary-dark: #2563eb; --accent: #10b981; --danger: #ef4444;
-            --warning: #0891b2; /* Cor META alterada para Ciano */
-            --border-color: #334155;
+            --bg-parchment:   #1a1209;
+            --bg-surface:     #241a0e;
+            --bg-card:        #2e2010;
+            --bg-inset:       #1e1508;
+            --text-ink:       #e8d5a3;
+            --text-muted:     #9c8055;
+            --text-bright:    #f5e6c0;
+            --gold:           #c9922e;
+            --gold-light:     #e8b84b;
+            --red-blood:      #8b1a1a;
+            --red-bright:     #c0392b;
+            --green-scroll:   #2d5a27;
+            --green-bright:   #3d7a35;
+            --border-rune:    #4a3510;
+            --border-gold:    #7a5a20;
+            --chaos-color:    #6b3fa0;
+            --chaos-bright:   #9b6fd0;
         }
-        
-        /* Tema Claro (Cores Renovadas) */
         .light-theme {
-            --bg-main: #f8fafc; --bg-surface: #ffffff; --bg-surface-light: #f1f5f9;
-            --text-main: #1e293b; --text-muted: #64748b;
-            --border-color: #e2e8f0;
+            --bg-parchment:   #f5ecd5;
+            --bg-surface:     #ede0c0;
+            --bg-card:        #faf3e0;
+            --bg-inset:       #e8d9b5;
+            --text-ink:       #2c1a08;
+            --text-muted:     #7a5a30;
+            --text-bright:    #1a0e04;
+            --gold:           #8b6914;
+            --gold-light:     #a07820;
+            --red-blood:      #8b1a1a;
+            --red-bright:     #c0392b;
+            --green-scroll:   #2d5a27;
+            --green-bright:   #3d7a35;
+            --border-rune:    #c8b080;
+            --border-gold:    #a08040;
+            --chaos-color:    #5a3090;
+            --chaos-bright:   #7a50b0;
         }
 
-        /* Aplicação dos temas e transições */
-        body { background-color: var(--bg-main); color: var(--text-main); transition: background-color 0.3s, color 0.3s; }
-        .card { background-color: var(--bg-surface); transition: background-color 0.3s; }
-        .card-light { background-color: var(--bg-surface-light); transition: background-color 0.3s; }
+        /* === TIPOGRAFIA === */
+        body { font-family: 'Crimson Pro', Georgia, serif; background-color: var(--bg-parchment); color: var(--text-ink); transition: background-color 0.3s, color 0.3s; }
+        .font-title { font-family: 'Cinzel', serif; }
+        h1, h2, h3 { font-family: 'Cinzel', serif; }
+
+        /* === COMPONENTES === */
+        .card { background-color: var(--bg-card); border: 1px solid var(--border-rune); }
+        .card-inset { background-color: var(--bg-inset); border: 1px solid var(--border-rune); }
+        .card-surface { background-color: var(--bg-surface); }
         .text-muted { color: var(--text-muted); }
+        .text-bright { color: var(--text-bright); }
+
+        .btn { font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.05em; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; border-radius: 4px; padding: 0.4rem 0.9rem; font-weight: 600; }
+        .btn-gold { background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%); color: #1a0e04; border-color: var(--gold-light); }
+        .btn-gold:hover { filter: brightness(1.15); }
+        .btn-green { background-color: var(--green-scroll); color: var(--text-ink); border-color: var(--green-bright); }
+        .btn-green:hover { background-color: var(--green-bright); }
+        .btn-red { background-color: var(--red-blood); color: #f5e6c0; border-color: var(--red-bright); }
+        .btn-red:hover { background-color: var(--red-bright); }
+        .btn-rune { background-color: var(--bg-surface); color: var(--text-ink); border-color: var(--border-gold); }
+        .btn-rune:hover { border-color: var(--gold); color: var(--gold-light); }
+        .btn-chaos { background-color: var(--chaos-color); color: #f0e6ff; border-color: var(--chaos-bright); }
+        .btn-chaos:hover { background-color: var(--chaos-bright); }
+
+        /* Inputs */
+        input[type="text"], input[type="number"], textarea, select {
+            background-color: var(--bg-inset);
+            color: var(--text-ink);
+            border: 1px solid var(--border-rune);
+            border-radius: 3px;
+            padding: 0.35rem 0.6rem;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        select option { background: var(--bg-card); }
+
+        /* === ABAS === */
+        .tab-bar { border-bottom: 2px solid var(--border-gold); display: flex; flex-wrap: wrap; gap: 0; }
+        .tab-btn { font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.08em; padding: 0.55rem 0.9rem; border-bottom: 2px solid transparent; margin-bottom: -2px; cursor: pointer; color: var(--text-muted); transition: all 0.15s; text-transform: uppercase; background: none; border-top: none; border-left: none; border-right: none; }
+        .tab-btn:hover { color: var(--text-ink); }
+        .tab-btn.active { color: var(--gold-light); border-bottom-color: var(--gold-light); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+        /* === LISTAS === */
+        .scroll-list { max-height: 60vh; overflow-y: auto; }
+        .scroll-list::-webkit-scrollbar { width: 6px; }
+        .scroll-list::-webkit-scrollbar-track { background: var(--bg-inset); }
+        .scroll-list::-webkit-scrollbar-thumb { background: var(--border-gold); border-radius: 3px; }
+        .list-item { padding: 0.5rem 0.75rem; cursor: pointer; border-bottom: 1px solid var(--border-rune); font-size: 0.95rem; transition: background 0.1s; }
+        .list-item:hover { background-color: var(--bg-surface); }
+        .list-item.selected { background-color: var(--gold); color: #1a0e04; font-weight: 600; }
+        .list-item:last-child { border-bottom: none; }
+
+        /* === EDITOR PANEL === */
+        .editor-panel { display: none; }
+        .editor-panel.active { display: block; animation: fadeIn 0.3s; }
+
+        /* === DADO DO CAOS === */
+        .chaos-die {
+            width: 56px; height: 56px;
+            background: var(--chaos-color);
+            border: 2px solid var(--chaos-bright);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Cinzel', serif; font-size: 1.6rem; font-weight: 700;
+            color: #f0e6ff;
+            cursor: pointer;
+            transition: transform 0.15s, filter 0.15s;
+            box-shadow: 0 0 10px rgba(107, 63, 160, 0.4);
+            user-select: none;
+        }
+        .chaos-die:hover { transform: scale(1.1); filter: brightness(1.2); }
+        .chaos-die.rolling { animation: rollDie 0.4s ease-out; }
+
+        /* === RESULTADO DO GERADOR === */
+        .result-card {
+            border: 2px solid var(--border-gold);
+            border-radius: 6px;
+            min-height: 160px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 1.5rem;
+            position: relative; overflow: hidden;
+            transition: background-color 0.4s, border-color 0.4s;
+        }
+        .result-card::before {
+            content: '';
+            position: absolute; inset: 0;
+            opacity: 0.06;
+            background: repeating-linear-gradient(45deg, var(--gold) 0, var(--gold) 1px, transparent 0, transparent 50%);
+            background-size: 12px 12px;
+            pointer-events: none;
+        }
+        .result-badge {
+            font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.15em;
+            text-transform: uppercase; padding: 0.2rem 0.7rem;
+            border: 1px solid currentColor; border-radius: 20px; margin-bottom: 0.75rem;
+            opacity: 0.9;
+        }
+        .result-title { font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .result-roll { font-size: 2rem; font-weight: 700; opacity: 0.25; position: absolute; top: 0.5rem; right: 0.75rem; font-family: 'Cinzel', serif; }
+        .result-desc { font-size: 0.95rem; color: var(--text-muted); max-width: 36ch; line-height: 1.5; }
+
+        /* === VERIFICAÇÃO DE CENA === */
+        .scene-check-card {
+            background: linear-gradient(135deg, rgba(107,63,160,0.12) 0%, transparent 100%);
+            border: 1px solid var(--chaos-color);
+            border-radius: 6px; padding: 1rem;
+        }
+        .chaos-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            background: var(--chaos-color); color: #f0e6ff;
+            border-radius: 4px; padding: 0.2rem 0.6rem;
+            font-family: 'Cinzel', serif; font-size: 0.7rem;
+        }
+
+        /* === PERSONAGENS === */
+        .char-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-rune);
+            border-radius: 6px; padding: 1rem;
+            position: relative;
+            transition: border-color 0.2s;
+        }
+        .char-card:hover { border-color: var(--border-gold); }
+        .char-emoji { font-size: 1.8rem; }
+        .trait-pill {
+            font-size: 0.7rem; font-family: 'Cinzel', serif; letter-spacing: 0.05em;
+            padding: 0.15rem 0.5rem; border: 1px solid var(--border-gold);
+            border-radius: 20px; color: var(--gold-light);
+        }
+
+        /* === BATALHA === */
+        .hp-bar-container { height: 6px; background: var(--bg-inset); border-radius: 3px; overflow: hidden; }
+        .hp-bar { height: 100%; border-radius: 3px; transition: width 0.3s; }
+        .combatant-row { border: 1px solid var(--border-rune); border-radius: 4px; padding: 0.5rem 0.75rem; margin-bottom: 0.4rem; transition: background 0.15s; }
+        .combatant-row.acted { opacity: 0.5; }
+        .combatant-row:hover { border-color: var(--border-gold); }
+
+        /* === ANIMAÇÕES === */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { transform: translateY(12px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        @keyframes rollDie { 0% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(-15deg) scale(0.9); } 75% { transform: rotate(15deg) scale(1.1); } 100% { transform: rotate(0deg) scale(1); } }
+
+        *:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 3px; }
+
+        /* === MODAL === */
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 40; display: none; }
+        .modal-box {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--bg-card); border: 1px solid var(--border-gold);
+            border-radius: 8px; z-index: 50; display: none;
+            width: min(90vw, 600px); max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+        }
+        .modal-box.open { display: block; animation: popIn 0.3s ease; }
+
+        /* === TOAST === */
+        .toast {
+            position: fixed; bottom: 1.25rem; right: 1.25rem;
+            background: var(--bg-surface); border: 1px solid var(--border-gold);
+            border-radius: 5px; padding: 0.6rem 1rem;
+            opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 100;
+            font-size: 0.9rem; max-width: 300px;
+        }
+        .toast.visible { opacity: 1; }
+
+        /* === SEPARADOR DECORATIVO === */
+        .rune-divider { display: flex; align-items: center; gap: 0.75rem; color: var(--border-gold); margin: 0.75rem 0; }
+        .rune-divider::before, .rune-divider::after { content: ''; flex: 1; height: 1px; background: var(--border-gold); opacity: 0.5; }
+
+        /* === STATUS BADGES === */
+        .status-nova { color: var(--gold-light); border-color: var(--gold); }
+        .status-andamento { color: #7eb8e8; border-color: #4a90d9; }
+        .status-conclusao { color: #7ecb7e; border-color: #4a9e4a; }
+
+        /* Scrollbar global */
+        ::-webkit-scrollbar { width: 7px; }
+        ::-webkit-scrollbar-track { background: var(--bg-inset); }
+        ::-webkit-scrollbar-thumb { background: var(--border-gold); border-radius: 3px; }
+
+        /* Responsive helpers */
+        @media (max-width: 768px) {
+            .tab-btn { font-size: 0.62rem; padding: 0.45rem 0.6rem; }
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen">
+
+<!-- LOADING -->
+<div id="loading-overlay" class="fixed inset-0 flex flex-col items-center justify-center z-50" style="background:var(--bg-parchment)">
+    <div class="font-title text-4xl mb-6" style="color:var(--gold)">⚔</div>
+    <p class="font-title text-sm tracking-widest" style="color:var(--text-muted)">CARREGANDO AVENTURA...</p>
+</div>
+
+<div id="app" class="max-w-7xl mx-auto px-4 py-5 opacity-0 transition-opacity duration-500">
+
+    <!-- CABEÇALHO -->
+    <header class="flex flex-wrap justify-between items-start gap-4 mb-6">
+        <div>
+            <h1 class="text-3xl font-title tracking-wide" style="color:var(--gold-light)">⚔ Adventure Crafter</h1>
+            <p class="text-sm" style="color:var(--text-muted)">Web Edition · Dado do Caos ativo</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <button id="btn-save" class="btn btn-gold">Salvar</button>
+            <label for="input-load" class="btn btn-rune cursor-pointer">Carregar</label>
+            <input type="file" id="input-load" class="hidden" accept=".json">
+            <button id="btn-theme" class="btn btn-rune" aria-label="Alternar tema" title="Alternar tema claro/escuro">☽</button>
+        </div>
+    </header>
+
+    <!-- ABAS -->
+    <nav class="tab-bar mb-6">
+        <button class="tab-btn active" data-tab="generator">Gerador</button>
+        <button class="tab-btn" data-tab="chaos">Verificação de Cena</button>
+        <button class="tab-btn" data-tab="battles">Batalhas</button>
+        <button class="tab-btn" data-tab="characters">Personagens</button>
+        <button class="tab-btn" data-tab="plotlines">Linhas de Enredo</button>
+        <button class="tab-btn" data-tab="turning_points">Pontos de Virada</button>
+        <button class="tab-btn" data-tab="notes">Diário</button>
+    </nav>
+
+    <main>
+        <!-- ========== ABA: GERADOR ========== -->
+        <section id="tab-generator" class="tab-content active">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+                <!-- Painel Esquerdo: Controles -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="card p-5 rounded-lg">
+                        <h2 class="font-title text-lg mb-4" style="color:var(--gold-light)">Gerar Ponto de Enredo</h2>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-title tracking-widest mb-1" style="color:var(--text-muted)">TEMA</label>
+                                <select id="sel-theme" class="w-full"></select>
+                            </div>
+                            <button id="btn-generate" class="btn btn-green w-full py-3 text-base">
+                                🎲 Gerar Ponto de Enredo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Rolador de Foco -->
+                    <div class="card p-5 rounded-lg">
+                        <h2 class="font-title text-sm tracking-wider mb-3" style="color:var(--gold-light)">ROLADORES DE FOCO</h2>
+                        <p class="text-xs mb-3" style="color:var(--text-muted)">Indica em qual Personagem ou Enredo o Ponto de Virada se concentra.</p>
+
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-xs font-title tracking-wider mb-1" style="color:var(--text-muted)">FOCO DE PERSONAGEM</p>
+                                <div class="flex gap-2 items-center">
+                                    <button id="btn-roll-char-focus" class="btn btn-gold flex-shrink-0">d100</button>
+                                    <div id="result-char-focus" class="flex-1 card-inset rounded p-2 text-sm text-center min-h-[2rem] flex items-center justify-center" style="color:var(--text-muted)">—</div>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-xs font-title tracking-wider mb-1" style="color:var(--text-muted)">FOCO DE ENREDO</p>
+                                <div class="flex gap-2 items-center">
+                                    <button id="btn-roll-plot-focus" class="btn btn-gold flex-shrink-0">d100</button>
+                                    <div id="result-plot-focus" class="flex-1 card-inset rounded p-2 text-sm text-center min-h-[2rem] flex items-center justify-center" style="color:var(--text-muted)">—</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Painel Direito: Resultado -->
+                <div class="lg:col-span-3">
+                    <div id="result-display" class="result-card card" style="min-height:240px">
+                        <p class="result-roll" id="result-roll-num" style="display:none"></p>
+                        <p class="result-badge" id="result-badge" style="display:none"></p>
+                        <h3 class="result-title" id="result-title" style="color:var(--text-muted)">Clique em Gerar</h3>
+                        <p class="result-desc" id="result-desc">Selecione um tema e gere um Ponto de Enredo para começar a aventura.</p>
+                        <div id="result-meta-info" class="mt-3 text-xs" style="color:var(--text-muted);display:none"></div>
+                    </div>
+
+                    <!-- Histórico de Rolagens Recentes -->
+                    <div class="mt-4 card p-4 rounded-lg">
+                        <h3 class="font-title text-xs tracking-widest mb-3" style="color:var(--text-muted)">ÚLTIMAS ROLAGENS</h3>
+                        <div id="roll-history" class="space-y-1">
+                            <p class="text-xs" style="color:var(--text-muted)">Nenhuma rolagem ainda...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== ABA: VERIFICAÇÃO DE CENA (DADO DO CAOS) ========== -->
+        <section id="tab-chaos" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- Dado do Caos -->
+                <div class="card p-6 rounded-lg">
+                    <h2 class="font-title text-lg mb-1" style="color:var(--chaos-bright)">Dado do Caos</h2>
+                    <p class="text-sm mb-5" style="color:var(--text-muted)">Controla o nível de imprevisibilidade da aventura. Começa em 5.</p>
+
+                    <div class="flex items-center gap-6 mb-6">
+                        <div class="chaos-die" id="chaos-die-display" title="Nível do Dado do Caos">5</div>
+                        <div class="flex flex-col gap-2">
+                            <button id="btn-chaos-up" class="btn btn-chaos">▲ Aumentar</button>
+                            <button id="btn-chaos-down" class="btn btn-rune">▼ Diminuir</button>
+                        </div>
+                        <div class="flex-1 text-sm" style="color:var(--text-muted)">
+                            <p><strong style="color:var(--text-ink)">1–3:</strong> Aventura controlada</p>
+                            <p><strong style="color:var(--text-ink)">4–6:</strong> Equilíbrio</p>
+                            <p><strong style="color:var(--text-ink)">7–9:</strong> Caos total</p>
+                        </div>
+                    <        .text-muted { color: var(--text-muted); }
         .btn-primary { background-color: var(--primary); transition: background-color 0.2s; }
         .btn-primary:hover { background-color: var(--primary-dark); }
         .btn-accent { background-color: var(--accent); transition: background-color 0.2s; }
